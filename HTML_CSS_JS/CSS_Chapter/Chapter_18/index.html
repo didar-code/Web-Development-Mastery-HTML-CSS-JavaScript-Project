@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 18 | CSS Display</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg1: #101728;
+        --bg2: #16213e;
+        --primary: #4fc3f7;
+        --secondary: #81c784;
+        --text: #eef6ff;
+        --muted: #b8c7d9;
+        --card: rgba(15, 30, 60, 0.82);
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, var(--bg1), var(--bg2));
+        color: var(--text);
+        line-height: 1.6;
+        min-height: 100vh;
+      }
+
+      .top-nav {
+        position: sticky;
+        top: 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 5%;
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.96),
+          rgba(39, 174, 96, 0.96)
+        );
+      }
+
+      .brand {
+        text-decoration: none;
+        color: white;
+        font-weight: 800;
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 0.7rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-link,
+      .home-btn {
+        text-decoration: none;
+        color: white;
+        padding: 0.75rem 1rem;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
+        font-weight: 700;
+      }
+
+      .nav-link.active {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: #07111f;
+      }
+
+      .hero {
+        width: min(1180px, 92%);
+        margin: 2rem auto;
+        padding: 2rem;
+        border-radius: 24px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        color: var(--muted);
+        margin-top: 1rem;
+      }
+
+      .main-grid {
+        width: min(1180px, 92%);
+        margin: auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.3rem;
+      }
+
+      .section-box {
+        padding: 2rem;
+        border-radius: 22px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .section-box.full {
+        grid-column: 1/-1;
+      }
+
+      .section-box h2 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .demo-box {
+        padding: 1rem;
+        margin: 0.8rem 0;
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+      }
+
+      .inline-blocks {
+        display: inline-block;
+        padding: 10px;
+        border: 1px solid red;
+        margin: 4px;
+      }
+
+      .normal-blocks {
+        border: 1px solid blue;
+        padding: 10px;
+        margin-top: 8px;
+      }
+
+      .hidden {
+        display: none;
+      }
+
+      .invisible {
+        visibility: hidden;
+      }
+
+      .fit img {
+        width: 100%;
+        max-width: 240px;
+        height: 160px;
+        object-fit: cover;
+        border-radius: 12px;
+        margin: 8px;
+      }
+
+      .cursor-demo {
+        cursor: pointer;
+        display: inline-block;
+        padding: 12px 20px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.08);
+      }
+
+      .overflow-container {
+        width: 220px;
+        height: 100px;
+        overflow: auto;
+        border: 1px solid white;
+        padding: 10px;
+        margin-top: 10px;
+      }
+
+      .opacity-box {
+        padding: 20px;
+        margin-top: 10px;
+        background: red;
+        border-radius: 12px;
+      }
+
+      .opacity {
+        opacity: 0.5;
+      }
+
+      .transparent {
+        background: rgba(255, 0, 0, 0.5);
+      }
+
+      .text-shadow-1 {
+        text-shadow: 3px 3px red;
+      }
+      .text-shadow-2 {
+        text-shadow: 3px 3px 5px red;
+      }
+
+      .box-shadow {
+        padding: 15px;
+        margin-top: 15px;
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.5);
+        background: white;
+        color: black;
+        border-radius: 12px;
+      }
+
+      .newspaper {
+        column-count: 3;
+        column-gap: 30px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        border: 1px solid white;
+        padding: 10px;
+        text-align: center;
+      }
+
+      .col {
+        display: inline-block;
+        width: 45%;
+        vertical-align: top;
+      }
+
+      .transform-box {
+        width: 90px;
+        height: 90px;
+        background: red;
+        margin: 15px;
+        display: inline-block;
+        border-radius: 10px;
+      }
+
+      .translate {
+        transform: translate(20px, 10px);
+      }
+      .scale {
+        transform: scale(1.15);
+      }
+      .rotate {
+        transform: rotate(25deg);
+      }
+      .skew {
+        transform: skew(15deg, 8deg);
+      }
+
+      .bottom-action {
+        text-align: center;
+        margin: 2rem 0 3rem;
+      }
+
+      .home-btn {
+        background: linear-gradient(90deg, #4fc3f7, #81c784);
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--muted);
+      }
+
+      @media (max-width: 900px) {
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+        .top-nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        .newspaper {
+          column-count: 1;
+        }
+        .col {
+          width: 100%;
+          display: block;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="top-nav">
+      <a href="../../project.html" class="brand">📚 WebDev Mastery</a>
+
+      <div class="nav-actions">
+        <a href="../../project.html" class="nav-link">Home</a>
+        <a href="../Chapter_17/index.html" class="nav-link">Previous</a>
+        <a href="#" class="nav-link active">Chapter 18</a>
+        <a href="../Chapter_19/index.html" class="nav-link">Next</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <h1>📘 Chapter 18: CSS Display</h1>
+      <p>
+        Display, visibility, object-fit, overflow, opacity, shadows, tables,
+        lists and transforms.
+      </p>
+    </header>
+
+    <main class="main-grid">
+      <section class="section-box">
+        <h2>8.1 Display vs Visibility</h2>
+        <div class="demo-box">
+          <div class="inline-blocks">1st child</div>
+          <div class="inline-blocks">2nd child</div>
+          <div class="normal-blocks">3rd child</div>
+        </div>
+        <p>This is <span class="hidden">hidden</span> text</p>
+        <p>This is <span class="invisible">invisible</span> text</p>
+      </section>
+
+      <section class="section-box fit">
+        <h2>8.2 Object Fit</h2>
+        <img src="./Images/cricketer.webp" />
+        <img src="./Images/nature.jpg" />
+      </section>
+
+      <section class="section-box">
+        <h2>8.3 Cursor</h2>
+        <div class="cursor-demo">Hover me</div>
+      </section>
+
+      <section class="section-box">
+        <h2>8.4 Overflow</h2>
+        <div class="overflow-container">
+          Long content Long content Long content Long content Long content
+        </div>
+      </section>
+
+      <section class="section-box">
+        <h2>8.5 Opacity</h2>
+        <div class="opacity-box">Normal</div>
+        <div class="opacity-box opacity">Opacity</div>
+        <div class="opacity-box transparent">RGBA</div>
+      </section>
+
+      <section class="section-box">
+        <h2>8.6 Shadows</h2>
+        <h3 class="text-shadow-1">Text Shadow</h3>
+        <h3 class="text-shadow-2">Blur Shadow</h3>
+        <div class="box-shadow">Box Shadow</div>
+      </section>
+
+      <section class="section-box full">
+        <h2>8.7 Multiple Columns</h2>
+        <div class="newspaper">
+          Coding creates a set of instructions for computers to follow. These
+          instructions determine what actions a computer can and cannot take.
+        </div>
+      </section>
+
+      <section class="section-box">
+        <h2>8.8 Tables</h2>
+        <table>
+          <tr>
+            <th>Firstname</th>
+            <th>Lastname</th>
+          </tr>
+          <tr>
+            <td>Didar</td>
+            <td>Chowdhury</td>
+          </tr>
+          <tr>
+            <td>Tashrif</td>
+            <td>Hasan</td>
+          </tr>
+        </table>
+      </section>
+
+      <section class="section-box">
+        <h2>8.9 Lists</h2>
+        <div class="col">
+          <ul>
+            <li>Item</li>
+            <li>Item</li>
+          </ul>
+        </div>
+        <div class="col">
+          <ol>
+            <li>Item</li>
+            <li>Item</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="section-box full">
+        <h2>8.10 Transforms</h2>
+        <div class="transform-box translate"></div>
+        <div class="transform-box scale"></div>
+        <div class="transform-box rotate"></div>
+        <div class="transform-box skew"></div>
+      </section>
+    </main>
+
+    <div class="bottom-action">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>© 2026 WebDev Mastery</footer>
+  </body>
+</html>

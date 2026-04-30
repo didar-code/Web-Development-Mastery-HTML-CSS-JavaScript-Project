@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 15: Working with Media</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: white;
+        padding: 20px;
+      }
+
+      .top-nav {
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.95),
+          rgba(39, 174, 96, 0.95)
+        );
+        padding: 0.9rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        margin-bottom: 30px;
+        border-radius: 14px;
+      }
+
+      .logo {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.15rem;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.55rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        transition: 0.3s ease;
+      }
+
+      .nav-links a:hover,
+      .nav-links .active {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.3rem;
+        margin-bottom: 30px;
+        color: #38bdf8;
+      }
+
+      .box {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(14px);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: 0.3s;
+      }
+
+      .box:hover {
+        transform: translateY(-4px);
+      }
+
+      h2 {
+        color: #f8fafc;
+        margin-bottom: 15px;
+        font-size: 1.3rem;
+      }
+
+      button {
+        padding: 12px 22px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        margin: 8px 6px 0 0;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: white;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+      }
+
+      .home-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 14px 28px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+        transition: 0.3s;
+      }
+
+      .home-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+      }
+
+      .data {
+        background: #facc15;
+        color: black;
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: bold;
+        margin-top: 12px;
+      }
+
+      .log {
+        background: black;
+        color: #22c55e;
+        font-family: monospace;
+        padding: 15px;
+        height: 180px;
+        overflow-y: auto;
+        border-radius: 12px;
+        margin-top: 15px;
+      }
+
+      svg,
+      video,
+      object {
+        max-width: 100%;
+        border-radius: 12px;
+      }
+
+      #chart svg {
+        width: 100%;
+        height: auto;
+      }
+
+      @media (max-width: 768px) {
+        .top-nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .nav-links {
+          justify-content: center;
+        }
+
+        button {
+          width: 100%;
+          margin-bottom: 10px;
+        }
+
+        h1 {
+          font-size: 1.7rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="top-nav">
+      <a href="../../project.html" class="logo">📚 WebDev Mastery</a>
+
+      <ul class="nav-links">
+        <li><a href="../../project.html">Home</a></li>
+        <li><a href="../Chapter_14/index.html">Previous</a></li>
+        <li><a href="#" class="active">Chapter 15</a></li>
+        <li><a href="../Chapter_16/index.html">Next</a></li>
+      </ul>
+    </nav>
+
+    <div class="container">
+      <h1>📐 Chapter 15: Working with Media</h1>
+
+      <div class="box">
+        <h2>15.1 Adding JavaScript to SVG</h2>
+        <svg id="mysvg" width="400" height="400">
+          <rect
+            id="square"
+            x="50"
+            y="50"
+            width="300"
+            height="300"
+            fill="#ff0000"
+          />
+        </svg>
+        <p>Click the square to toggle its color.</p>
+      </div>
+
+      <div class="box">
+        <h2>15.2 Accessing SVG from Web Page</h2>
+        <object
+          id="svgObject"
+          type="image/svg+xml"
+          data="demo1.svg"
+          width="500"
+          height="500"
+        ></object>
+      </div>
+
+      <div class="box">
+        <h2>15.3 SVG Bar Chart with D3</h2>
+        <div id="chart"></div>
+      </div>
+
+      <div class="box">
+        <h2>15.4 SVG + Canvas Integration</h2>
+        <svg id="svgelem" width="600" height="400">
+          <foreignObject width="300" height="150">
+            <canvas id="thisCanvas" width="300" height="150"></canvas>
+          </foreignObject>
+          <circle id="redcircle" cx="450" cy="100" r="100" fill="red" />
+        </svg>
+      </div>
+
+      <div class="box">
+        <h2>15.6 Video Control</h2>
+
+        <video id="meadow" controls>
+          <source src="./Videos/movie1(1).mp4" type="video/mp4" />
+        </video>
+
+        <div id="feedback" class="data">Video feedback will appear here.</div>
+
+        <div>
+          <button id="start">▶ Play</button>
+          <button id="pause" disabled>⏸ Pause</button>
+          <button id="stop" disabled>⏹ Stop</button>
+        </div>
+      </div>
+
+      <div class="box">
+        <h2>🧾 Event Log</h2>
+        <div id="log" class="log"></div>
+      </div>
+
+      <div style="text-align: center">
+        <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+      </div>
+    </div>
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+
+    <script>
+      function logEvent(message) {
+        const log = document.getElementById("log");
+        log.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        log.scrollTop = log.scrollHeight;
+      }
+
+      const square = document.getElementById("square");
+      square.onclick = () => {
+        const color = square.getAttribute("fill");
+        square.setAttribute(
+          "fill",
+          color === "#ff0000" ? "#0000ff" : "#ff0000",
+        );
+        logEvent("Square color changed");
+      };
+
+      const data = [45, 78, 32, 90, 56, 21, 67, 88, 34, 76];
+
+      const svg = d3
+        .select("#chart")
+        .append("svg")
+        .attr("width", "100%")
+        .attr("height", 400);
+
+      svg
+        .selectAll("rect")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("x", (d, i) => i * 35)
+        .attr("y", (d) => 400 - d * 3)
+        .attr("width", 30)
+        .attr("height", (d) => d * 3)
+        .attr("fill", "#38bdf8")
+        .on("click", (e, d) => logEvent("Bar clicked " + d));
+
+      const canvas = document.getElementById("thisCanvas");
+      if (canvas.getContext) {
+        const ctx = canvas.getContext("2d");
+        ctx.fillStyle = "red";
+        ctx.fillRect(0, 0, 200, 200);
+      }
+
+      const circle = document.getElementById("redcircle");
+      circle.onclick = () => {
+        const color = circle.getAttribute("fill");
+        circle.setAttribute("fill", color === "red" ? "blue" : "red");
+        logEvent("Circle color changed");
+      };
+
+      const meadow = document.getElementById("meadow");
+      const start = document.getElementById("start");
+      const pause = document.getElementById("pause");
+      const stop = document.getElementById("stop");
+
+      start.onclick = () => {
+        meadow.play();
+        start.disabled = true;
+        pause.disabled = false;
+        stop.disabled = false;
+      };
+
+      pause.onclick = () => {
+        meadow.pause();
+        start.disabled = false;
+        pause.disabled = true;
+      };
+
+      stop.onclick = () => {
+        meadow.pause();
+        meadow.currentTime = 0;
+        start.disabled = false;
+        pause.disabled = true;
+        stop.disabled = true;
+      };
+
+      meadow.addEventListener("timeupdate", () => {
+        document.getElementById("feedback").textContent =
+          Math.round(meadow.currentTime) + " seconds";
+      });
+    </script>
+  </body>
+</html>

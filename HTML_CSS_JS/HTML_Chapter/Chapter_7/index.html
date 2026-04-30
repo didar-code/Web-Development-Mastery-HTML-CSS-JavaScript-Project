@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 7 | SVG & Canvas</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-1: #101728;
+        --bg-2: #16213e;
+        --primary: #4fc3f7;
+        --secondary: #81c784;
+        --text: #eef6ff;
+        --muted: #b8c7d9;
+        --card: rgba(15, 30, 60, 0.82);
+        --card-soft: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        color: var(--text);
+        background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        line-height: 1.6;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(
+            circle at 15% 20%,
+            rgba(79, 195, 247, 0.17),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 85% 18%,
+            rgba(129, 199, 132, 0.15),
+            transparent 26%
+          );
+      }
+
+      .top-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.9rem 5%;
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.96),
+          rgba(39, 174, 96, 0.96)
+        );
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        text-decoration: none;
+        color: white;
+        font-weight: 800;
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-link,
+      .home-btn {
+        text-decoration: none;
+        color: white;
+        font-weight: 700;
+        border-radius: 999px;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.14);
+        transition: 0.25s ease;
+      }
+
+      .nav-link:hover,
+      .home-btn:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      .nav-link.active {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: #07111f;
+      }
+
+      .hero {
+        width: min(1180px, 92%);
+        margin: 3rem auto 1.5rem;
+        padding: 2.5rem;
+        border-radius: 28px;
+        background: linear-gradient(
+          135deg,
+          rgba(15, 30, 60, 0.84),
+          rgba(25, 47, 89, 0.72)
+        );
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        color: var(--muted);
+        margin-top: 1rem;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        width: min(1180px, 92%);
+        margin: auto;
+      }
+
+      .stat-card {
+        padding: 1.2rem;
+        border-radius: 18px;
+        background: var(--card-soft);
+        border: 1px solid var(--border);
+      }
+
+      .stat-card strong {
+        display: block;
+        font-size: 1.4rem;
+        color: var(--primary);
+      }
+
+      .main-grid {
+        width: min(1180px, 92%);
+        margin: 2rem auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.3rem;
+      }
+
+      .container {
+        padding: 2rem;
+        border-radius: 22px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .container.full {
+        grid-column: 1/-1;
+      }
+
+      .container h2 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .container h3 {
+        color: var(--secondary);
+        margin-top: 1rem;
+      }
+
+      svg,
+      canvas {
+        display: block;
+        margin: 15px auto;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        background: white;
+      }
+
+      .bottom-action {
+        text-align: center;
+        margin: 2rem 0 3rem;
+      }
+
+      .home-btn {
+        background: linear-gradient(90deg, #4fc3f7, #81c784);
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--muted);
+      }
+
+      @media (max-width: 900px) {
+        .stats,
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .top-nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="top-nav">
+      <a href="../../project.html" class="brand">📚 WebDev Mastery</a>
+
+      <div class="nav-actions">
+        <a href="../../project.html" class="nav-link">Home</a>
+        <a href="../Chapter_6/index.html" class="nav-link">Previous</a>
+        <a href="#" class="nav-link active">Chapter 7</a>
+        <a href="../Chapter_8/index.html" class="nav-link">Next</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <h1>Chapter 7 📘 HTML Graphics</h1>
+      <p>
+        SVG graphics, text, stroke and canvas examples in premium responsive
+        layout.
+      </p>
+    </header>
+
+    <section class="stats">
+      <div class="stat-card">
+        <strong>8</strong>
+        <span>SVG Shapes</span>
+      </div>
+      <div class="stat-card">
+        <strong>4</strong>
+        <span>SVG Text Types</span>
+      </div>
+      <div class="stat-card">
+        <strong>5</strong>
+        <span>Canvas Examples</span>
+      </div>
+    </section>
+
+    <main class="main-grid">
+      <section class="container">
+        <h2>.1 SVG Graphics</h2>
+
+        <h3>.1.1 Rectangle</h3>
+        <svg width="100" height="100">
+          <rect
+            x="10"
+            y="10"
+            width="80"
+            height="60"
+            stroke="red"
+            stroke-width="2"
+            fill="yellow"
+          />
+        </svg>
+
+        <h3>.1.2 Rounded Rectangle</h3>
+        <svg width="100" height="100">
+          <rect
+            x="10"
+            y="10"
+            width="80"
+            height="60"
+            rx="8"
+            ry="8"
+            stroke="red"
+            stroke-width="2"
+            fill="yellow"
+          />
+        </svg>
+
+        <h3>.1.3 Circle</h3>
+        <svg width="100" height="100">
+          <circle
+            cx="50"
+            cy="50"
+            r="40"
+            stroke="red"
+            stroke-width="2"
+            fill="yellow"
+          />
+        </svg>
+
+        <h3>.1.4 Ellipse</h3>
+        <svg width="150" height="100">
+          <ellipse
+            cx="60"
+            cy="60"
+            rx="50"
+            ry="30"
+            stroke="red"
+            stroke-width="2"
+            fill="yellow"
+          />
+        </svg>
+
+        <h3>.1.5 Line</h3>
+        <svg width="100" height="100">
+          <line x1="0" y1="0" x2="100" y2="50" stroke="red" stroke-width="2" />
+        </svg>
+      </section>
+
+      <section class="container">
+        <h2>.1 Continued</h2>
+
+        <h3>.1.6 Polyline</h3>
+        <svg width="100" height="100">
+          <polyline
+            points="50,0 100,50 50,100 0,50"
+            stroke="red"
+            stroke-width="2"
+            fill="green"
+          />
+        </svg>
+
+        <h3>.1.7 Polygon</h3>
+        <svg width="100" height="100">
+          <polygon
+            points="50,0 100,50 50,100 0,50"
+            stroke="red"
+            stroke-width="2"
+            fill="green"
+          />
+        </svg>
+
+        <h3>.1.8 Path</h3>
+        <svg width="100" height="100">
+          <path
+            d="M50 0 L25 80 l50 0 Z"
+            stroke="red"
+            stroke-width="2"
+            fill="green"
+          />
+        </svg>
+      </section>
+
+      <section class="container full">
+        <h2>.2 SVG Text & Links</h2>
+
+        <h3>Simple Text</h3>
+        <svg width="300" height="100">
+          <text x="0" y="20" fill="green">Life is a beautiful harsh game.</text>
+        </svg>
+
+        <h3>Text with Tspan</h3>
+        <svg width="200" height="100">
+          <text x="0" y="20" fill="green">
+            Life is a beautiful harsh game.
+            <tspan x="10" y="50" fill="blue">Live to survive.</tspan>
+            <tspan x="20" y="80">Live to survive.</tspan>
+          </text>
+        </svg>
+
+        <h3>Rotated Text</h3>
+        <svg width="300" height="200">
+          <text x="20" y="20" fill="green" transform="rotate(30)">
+            Life is a beautiful harsh game.
+          </text>
+        </svg>
+
+        <h3>SVG Link</h3>
+        <svg width="200" height="50" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <a xlink:href="https://www.amazon.com" target="_blank">
+            <text x="0" y="20" fill="green">Click here to visit Amazon</text>
+          </a>
+        </svg>
+      </section>
+
+      <section class="container">
+        <h2>.3 SVG Stroke</h2>
+        <svg width="300" height="50">
+          <line
+            x1="0"
+            y1="10"
+            x2="300"
+            y2="10"
+            stroke="brown"
+            stroke-width="6"
+            stroke-dasharray="10,5,20"
+          />
+        </svg>
+      </section>
+
+      <section class="container full">
+        <h2>.6 Canvas Examples</h2>
+
+        <canvas id="canvas-text" width="200" height="100"></canvas>
+        <canvas id="canvas-line" width="200" height="100"></canvas>
+        <canvas id="canvas-circle" width="200" height="100"></canvas>
+        <canvas id="canvas-linear-gradient" width="200" height="100"></canvas>
+      </section>
+    </main>
+
+    <div class="bottom-action">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>© 2026 WebDev Mastery</footer>
+
+    <script>
+      document
+        .getElementById("canvas-text")
+        .getContext("2d")
+        .fillText("Didar Chowdhury", 10, 50);
+
+      const ctxLine = document.getElementById("canvas-line").getContext("2d");
+      ctxLine.beginPath();
+      ctxLine.moveTo(0, 0);
+      ctxLine.lineTo(200, 100);
+      ctxLine.stroke();
+
+      const ctxCircle = document
+        .getElementById("canvas-circle")
+        .getContext("2d");
+      ctxCircle.beginPath();
+      ctxCircle.arc(95, 50, 40, 0, 2 * Math.PI);
+      ctxCircle.stroke();
+
+      const ctxGrad = document
+        .getElementById("canvas-linear-gradient")
+        .getContext("2d");
+      const grd = ctxGrad.createLinearGradient(0, 0, 200, 0);
+      grd.addColorStop(0, "red");
+      grd.addColorStop(1, "yellow");
+      ctxGrad.fillStyle = grd;
+      ctxGrad.fillRect(20, 20, 160, 60);
+    </script>
+  </body>
+</html>

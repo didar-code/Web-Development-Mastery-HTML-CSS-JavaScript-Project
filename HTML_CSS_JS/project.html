@@ -1,0 +1,1441 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0"
+    />
+
+    <!-- SEO মেটা ট্যাগ -->
+    <title>
+      Web Development Mastery: Complete HTML5, CSS3 & JavaScript Tutorial
+      Project
+    </title>
+    <meta
+      name="description"
+      content="Interactive web development learning platform with 30+ chapters covering HTML, CSS, JavaScript tutorials, practical examples, and projects for beginners to advanced developers."
+    />
+    <meta
+      name="keywords"
+      content="HTML tutorial, CSS tutorial, JavaScript tutorial, web development course, frontend programming, coding examples, responsive design, web projects"
+    />
+    <meta name="author" content="Md. Didarul Alam Chowdhury" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+
+    <!-- Open Graph Tags -->
+    <meta
+      property="og:title"
+      content="Complete Web Development Learning Platform | HTML CSS JS"
+    />
+    <meta
+      property="og:description"
+      content="Master web development with 30+ interactive chapters covering HTML5, CSS3, and modern JavaScript with practical examples"
+    />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:image"
+      content="https://yourdomain.com/images/web-dev-banner.jpg"
+    />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Web Development Tutorial Project" />
+    <meta
+      name="twitter:description"
+      content="Learn HTML, CSS, JavaScript with hands-on examples"
+    />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://yourdomain.com/" />
+
+    <!-- Favicon -->
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📚</text></svg>"
+    />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: #fff;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        line-height: 1.6;
+      }
+
+      /* Background Pattern */
+      body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background:
+          radial-gradient(
+            circle at 15% 50%,
+            rgba(41, 128, 185, 0.1) 0%,
+            transparent 20%
+          ),
+          radial-gradient(
+            circle at 85% 30%,
+            rgba(46, 204, 113, 0.1) 0%,
+            transparent 20%
+          ),
+          radial-gradient(
+            circle at 50% 80%,
+            rgba(155, 89, 182, 0.1) 0%,
+            transparent 20%
+          );
+        z-index: -1;
+      }
+
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+
+      /* Navigation */
+      nav {
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.95) 0%,
+          rgba(39, 174, 96, 0.95) 100%
+        );
+        padding: 0.8rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: white;
+        font-weight: bold;
+        font-size: 1.2rem;
+      }
+
+      .logo img {
+        width: 32px;
+        height: 32px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+      }
+
+      nav ul {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      nav a,
+      .dropbtn {
+        color: #fff;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        font-size: 0.95rem;
+        display: block;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border-radius: 6px;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      nav a:hover,
+      .dropbtn:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+      }
+
+      .dropdown {
+        position: relative;
+      }
+
+      .dropbtn {
+        border: none;
+        font-family: inherit;
+      }
+
+      .dropdown-content {
+        display: block;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        background: rgba(25, 42, 86, 0.98);
+        backdrop-filter: blur(14px);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        min-width: 300px;
+        max-height: 72vh;
+        overflow-y: auto;
+        z-index: 3000;
+        border-radius: 12px;
+        box-shadow: 0 16px 38px rgba(0, 0, 0, 0.48);
+        padding: 0.55rem 0;
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(8px);
+        pointer-events: none;
+        transition:
+          opacity 0.22s ease,
+          transform 0.22s ease,
+          visibility 0.22s ease;
+      }
+
+      .dropdown-content::before {
+        content: "";
+        position: absolute;
+        top: -10px;
+        left: 0;
+        width: 100%;
+        height: 10px;
+      }
+
+      .dropdown:hover .dropdown-content,
+      .dropdown:focus-within .dropdown-content,
+      .dropdown.open .dropdown-content {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+        pointer-events: auto;
+      }
+
+      .dropdown.open .dropbtn,
+      .dropdown:hover .dropbtn {
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      .dropdown-content a {
+        color: #e0e0e0;
+        padding: 0.8rem 1.2rem;
+        margin: 0.2rem 0.5rem;
+        border-radius: 7px;
+        transition: all 0.2s;
+        font-weight: 500;
+        white-space: nowrap;
+      }
+
+      .dropdown-content a:hover,
+      .dropdown-content a:focus {
+        background: rgba(52, 152, 219, 0.32);
+        color: white;
+        padding-left: 1.5rem;
+        outline: none;
+      }
+
+      /* Center Animated Icons */
+      .animation-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 3rem 0;
+        gap: 3rem;
+        flex-wrap: wrap;
+        animation: float 4s ease-in-out infinite;
+        z-index: 1;
+        position: relative;
+      }
+
+      .tech-card {
+        text-align: center;
+        perspective: 1000px;
+      }
+
+      .tech-icon {
+        width: 160px;
+        height: 160px;
+        border-radius: 20px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        filter: brightness(0.95) contrast(1.1);
+        padding: 20px;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .tech-icon:hover {
+        transform: translateY(-15px) rotateY(15deg) scale(1.1);
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+        filter: brightness(1.1) contrast(1.2);
+      }
+
+      .tech-card figcaption {
+        margin-top: 1rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #4fc3f7;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-20px);
+        }
+      }
+
+      /* Identity Section */
+      .student-identity {
+        display: flex;
+        justify-content: space-between;
+        padding: 2rem;
+        background: linear-gradient(
+          135deg,
+          rgba(30, 60, 114, 0.7) 0%,
+          rgba(42, 82, 152, 0.7) 100%
+        );
+        margin: 2rem auto;
+        max-width: 1200px;
+        border-radius: 15px;
+        gap: 2rem;
+        flex-wrap: wrap;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        z-index: 1;
+        position: relative;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .identity-box {
+        flex: 1;
+        min-width: 300px;
+        padding: 2rem;
+        background: rgba(15, 30, 60, 0.8);
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        transition: transform 0.3s ease;
+      }
+
+      .identity-box:hover {
+        transform: translateY(-5px);
+      }
+
+      .identity-box h2 {
+        font-size: 1.8rem;
+        color: #4fc3f7;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 2px solid rgba(79, 195, 247, 0.3);
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .identity-box ul {
+        list-style: none;
+      }
+
+      .identity-box ul li {
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: flex-start;
+      }
+
+      .identity-box ul li strong {
+        color: #81c784;
+        min-width: 120px;
+        display: inline-block;
+      }
+
+      .identity-box ul li::before {
+        content: "▸";
+        color: #4fc3f7;
+        margin-right: 10px;
+        font-weight: bold;
+      }
+
+      /* Description */
+      .general-description {
+        padding: 3rem 2rem;
+        text-align: center;
+        max-width: 1200px;
+        margin: 0 auto;
+        z-index: 1;
+        position: relative;
+      }
+
+      .general-description h2 {
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        color: #81c784;
+        text-shadow: 0 2px 10px rgba(129, 199, 132, 0.3);
+        background: linear-gradient(90deg, #81c784, #4fc3f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .general-description p {
+        font-size: 1.2rem;
+        line-height: 1.8;
+        color: #e0e0e0;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 1.5rem;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 12px;
+        border-left: 4px solid #4fc3f7;
+      }
+
+      /* Contact + Login + Vertical Nav */
+      .contact-login {
+        display: flex;
+        justify-content: space-between;
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+        gap: 2rem;
+        flex-wrap: wrap;
+        z-index: 1;
+        position: relative;
+      }
+
+      .student-contact-info,
+      .login-form,
+      .vertical-nav {
+        flex: 1;
+        min-width: 300px;
+        padding: 2rem;
+        background: rgba(15, 30, 60, 0.8);
+        border-radius: 12px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .vertical-nav h3,
+      .student-contact-info h3,
+      .login-form h3 {
+        font-size: 1.5rem;
+        color: #4fc3f7;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 2px solid rgba(79, 195, 247, 0.3);
+      }
+
+      .vertical-nav ul {
+        list-style: none;
+      }
+
+      .vertical-nav ul li {
+        margin-bottom: 0.8rem;
+      }
+
+      .vertical-nav ul li a {
+        color: #e0e0e0;
+        text-decoration: none;
+        padding: 0.8rem 1rem;
+        display: block;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        background: rgba(255, 255, 255, 0.05);
+        border-left: 3px solid transparent;
+      }
+
+      .vertical-nav ul li a:hover {
+        background: rgba(79, 195, 247, 0.2);
+        border-left: 3px solid #4fc3f7;
+        padding-left: 1.5rem;
+      }
+
+      .student-contact-info p {
+        margin-bottom: 1rem;
+        color: #e0e0e0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .student-contact-info strong {
+        color: #81c784;
+        min-width: 80px;
+      }
+
+      .login-form input {
+        width: 100%;
+        padding: 1rem;
+        margin: 1rem 0;
+        border: 2px solid rgba(79, 195, 247, 0.3);
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 1rem;
+        transition: all 0.3s;
+      }
+
+      .login-form input:focus {
+        outline: none;
+        border-color: #4fc3f7;
+        box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+      }
+
+      .login-form button {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(90deg, #4fc3f7, #2196f3);
+        color: white;
+        border: none;
+        cursor: pointer;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 1rem;
+        transition: all 0.3s;
+        margin-top: 1rem;
+      }
+
+      .login-form button:hover {
+        background: linear-gradient(90deg, #2196f3, #1976d2);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(33, 150, 243, 0.4);
+      }
+
+      /* Footer */
+      footer {
+        background: linear-gradient(
+          90deg,
+          rgba(30, 60, 114, 0.95) 0%,
+          rgba(15, 30, 60, 0.95) 100%
+        );
+        color: #e0e0e0;
+        text-align: center;
+        padding: 2rem;
+        margin-top: 3rem;
+        z-index: 1;
+        position: relative;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .footer-links {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+      }
+
+      .footer-links a {
+        color: #4fc3f7;
+        text-decoration: none;
+        transition: all 0.3s;
+      }
+
+      .footer-links a:hover {
+        color: #81c784;
+        text-decoration: underline;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        nav {
+          flex-direction: column;
+          padding: 1rem;
+        }
+
+        nav ul {
+          justify-content: center;
+          margin-top: 1rem;
+        }
+
+        .dropdown {
+          width: 100%;
+        }
+
+        .dropbtn {
+          width: 100%;
+          text-align: left;
+        }
+
+        .dropdown-content {
+          position: static;
+          min-width: 100%;
+          max-height: 0;
+          overflow: hidden;
+          padding: 0;
+          margin-top: 0.35rem;
+          opacity: 1;
+          visibility: visible;
+          transform: none;
+          pointer-events: auto;
+          border-radius: 10px;
+          transition:
+            max-height 0.28s ease,
+            padding 0.28s ease;
+        }
+
+        .dropdown:hover .dropdown-content,
+        .dropdown:focus-within .dropdown-content {
+          max-height: 0;
+          padding: 0;
+        }
+
+        .dropdown.open .dropdown-content {
+          max-height: 70vh;
+          padding: 0.5rem 0;
+          overflow-y: auto;
+        }
+
+        .animation-container {
+          gap: 1.5rem;
+        }
+
+        .tech-icon {
+          width: 120px;
+          height: 120px;
+        }
+
+        .student-identity,
+        .contact-login {
+          padding: 1rem;
+        }
+
+        .identity-box,
+        .student-contact-info,
+        .login-form,
+        .vertical-nav {
+          min-width: 100%;
+        }
+
+        .general-description h2 {
+          font-size: 2rem;
+        }
+
+        .general-description p {
+          font-size: 1rem;
+        }
+      }
+
+      /* Progress Bar */
+      .progress-section {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 2rem;
+        background: rgba(15, 30, 60, 0.8);
+        border-radius: 12px;
+      }
+
+      .progress-section h3 {
+        color: #81c784;
+        margin-bottom: 1rem;
+      }
+
+      .progress-bar {
+        height: 20px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        margin-bottom: 2rem;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, #4fc3f7, #81c784);
+        width: 75%;
+        border-radius: 10px;
+        transition: width 1s ease;
+        position: relative;
+      }
+
+      .progress-fill::after {
+        content: "75% Complete";
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 0.8rem;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+      }
+    </style>
+  </head>
+  <body itemscope itemtype="https://schema.org/WebApplication">
+    <nav>
+      <a
+        href="./index.html"
+        class="logo"
+        aria-label="Web Development Learning Home"
+      >
+        <span>📚</span>
+        <span>WebDev Mastery</span>
+      </a>
+      <ul>
+        <li><a href="./index.html" aria-label="Home Page">Home</a></li>
+        <li>
+          <a href="./about.html" aria-label="About This Project">About</a>
+        </li>
+
+        <li class="dropdown">
+          <button
+            type="button"
+            class="dropbtn"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            HTML5 Tutorials ▾
+          </button>
+          <div class="dropdown-content" role="menu">
+            <a
+              href="./HTML_Chapter/Chapter_1/index.html"
+              aria-label="HTML Chapter 1: Getting to Know HTML"
+            >
+              <strong>Chapter 1:</strong> Getting to Know HTML Basics
+            </a>
+            <a
+              href="./HTML_Chapter/Chapter_2/index.html"
+              aria-label="HTML Chapter 2: HTML Elements"
+            >
+              <strong>Chapter 2:</strong> HTML Elements & Structure
+            </a>
+            <a
+              href="./HTML_Chapter/Chapter_3/index.html"
+              aria-label="HTML Chapter 3: HTML Styles"
+            >
+              <strong>Chapter 3:</strong> HTML Styles & Formatting
+            </a>
+            <a
+              href="./HTML_Chapter/Chapter_4/index.html"
+              aria-label="HTML Chapter 4: Semantic HTML"
+            >
+              <strong>Chapter 4:</strong> Semantic HTML5 Elements
+            </a>
+            <a
+              href="./HTML_Chapter/Chapter_5/index.html"
+              aria-label="HTML Chapter 5: Web Forms"
+            >
+              <strong>Chapter 5:</strong> Interactive Web Forms
+            </a>
+            <a
+              href="./HTML_Chapter/Chapter_6/index.html"
+              aria-label="HTML Chapter 6: HTML Multimedia"
+            >
+              <strong>Chapter 6:</strong> Multimedia in HTML
+            </a>
+            <a
+              href="./HTML_Chapter/Chapter_7/index.html"
+              aria-label="HTML Chapter 7: HTML Graphics"
+            >
+              <strong>Chapter 7:</strong> HTML Graphics & Canvas
+            </a>
+            <a
+              href="./HTML_Chapter/Chapter_8/index.html"
+              aria-label="HTML Chapter 8: Advanced HTML"
+            >
+              <strong>Chapter 8:</strong> Advanced HTML Techniques
+            </a>
+            <a
+              href="./HTML_Chapter/Chapter_9/index.html"
+              aria-label="HTML Chapter 9: HTML Events"
+            >
+              <strong>Chapter 9:</strong> HTML Event Handling
+            </a>
+            <a
+              href="./HTML_Chapter/Chapter_10/index.html"
+              aria-label="HTML Chapter 10: HTML5 APIs"
+            >
+              <strong>Chapter 10:</strong> HTML5 APIs & Features
+            </a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+          <button
+            type="button"
+            class="dropbtn"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            CSS3 Tutorials ▾
+          </button>
+          <div class="dropdown-content" role="menu">
+            <a
+              href="./CSS_Chapter/Chapter_11/index.html"
+              aria-label="CSS Chapter 1: Getting to Know CSS"
+            >
+              <strong>Chapter 11:</strong> Introduction to CSS3
+            </a>
+            <a
+              href="./CSS_Chapter/Chapter_12/index.html"
+              aria-label="CSS Chapter 2: CSS Selectors"
+            >
+              <strong>Chapter 12:</strong> CSS Selectors & Specificity
+            </a>
+            <a
+              href="./CSS_Chapter/Chapter_13/index.html"
+              aria-label="CSS Chapter 3: CSS Cascading"
+            >
+              <strong>Chapter 13:</strong> CSS Cascade & Inheritance
+            </a>
+            <a
+              href="./CSS_Chapter/Chapter_14/index.html"
+              aria-label="CSS Chapter 4: CSS Box Model"
+            >
+              <strong>Chapter 14:</strong> Box Model & Layout
+            </a>
+            <a
+              href="./CSS_Chapter/Chapter_15/index.html"
+              aria-label="CSS Chapter 5: CSS Colors"
+            >
+              <strong>Chapter 15:</strong> Colors & Gradients
+            </a>
+            <a
+              href="./CSS_Chapter/Chapter_16/index.html"
+              aria-label="CSS Chapter 6: CSS Text"
+            >
+              <strong>Chapter 16:</strong> Text Styling & Typography
+            </a>
+            <a
+              href="./CSS_Chapter/Chapter_17/index.html"
+              aria-label="CSS Chapter 7: CSS Backgrounds"
+            >
+              <strong>Chapter 17:</strong> Backgrounds & Effects
+            </a>
+            <a
+              href="./CSS_Chapter/Chapter_18/index.html"
+              aria-label="CSS Chapter 8: CSS Display"
+            >
+              <strong>Chapter 18:</strong> Display & Positioning
+            </a>
+            <a
+              href="./CSS_Chapter/Chapter_19/index.html"
+              aria-label="CSS Chapter 9: CSS Layout"
+            >
+              <strong>Chapter 19:</strong> Modern Layout Techniques
+            </a>
+            <a
+              href="./CSS_Chapter/Chapter_20/index.html"
+              aria-label="CSS Chapter 10: CSS Transitions"
+            >
+              <strong>Chapter 20:</strong> Transitions & Animations
+            </a>
+            <a
+              href="./CSS_Chapter/Chapter_21/index.html"
+              aria-label="CSS Chapter 11: Advanced CSS"
+            >
+              <strong>Chapter 21:</strong> Advanced CSS Features
+            </a>
+            <a
+              href="./CSS_Chapter/Chapter_22/index.html"
+              aria-label="CSS Chapter 12: Responsive CSS"
+            >
+              <strong>Chapter 22:</strong> Responsive Web Design
+            </a>
+          </div>
+        </li>
+
+        <li class="dropdown">
+          <button
+            type="button"
+            class="dropbtn"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            JavaScript Tutorials ▾
+          </button>
+          <div class="dropdown-content" role="menu">
+            <a
+              href="./JavaScriptChapter/Chapter_1/index.html"
+              aria-label="JavaScript Chapter 1: Development Environment"
+            >
+              <strong>Chapter 1:</strong> Development Environment Setup
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_2/index.html"
+              aria-label="JavaScript Chapter 2: Strings and Regular Expressions"
+            >
+              <strong>Chapter 2:</strong> Strings & Regular Expressions
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_3/index.html"
+              aria-label="JavaScript Chapter 3: Numbers"
+            >
+              <strong>Chapter 3:</strong> Numbers & Math Operations
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_4/index.html"
+              aria-label="JavaScript Chapter 4: Dates"
+            >
+              <strong>Chapter 4:</strong> Date & Time Handling
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_5/index.html"
+              aria-label="JavaScript Chapter 5: Arrays"
+            >
+              <strong>Chapter 5:</strong> Arrays & Array Methods
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_6/index.html"
+              aria-label="JavaScript Chapter 6: Functions"
+            >
+              <strong>Chapter 6:</strong> Functions & Scope
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_7/index.html"
+              aria-label="JavaScript Chapter 7: Objects"
+            >
+              <strong>Chapter 7:</strong> Objects & Prototypes
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_8/index.html"
+              aria-label="JavaScript Chapter 8: Classes"
+            >
+              <strong>Chapter 8:</strong> ES6 Classes
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_9/index.html"
+              aria-label="JavaScript Chapter 9: Asynchronous Programming"
+            >
+              <strong>Chapter 9:</strong> Asynchronous JavaScript
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_10/index.html"
+              aria-label="JavaScript Chapter 10: Errors and Testing"
+            >
+              <strong>Chapter 10:</strong> Error Handling & Testing
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_12/index.html"
+              aria-label="JavaScript Chapter 12: Working with HTML"
+            >
+              <strong>Chapter 12:</strong> DOM Manipulation
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_13/index.html"
+              aria-label="JavaScript Chapter 13: Fetching Remote Data"
+            >
+              <strong>Chapter 13:</strong> Fetch API & AJAX
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_14/index.html"
+              aria-label="JavaScript Chapter 14: Data Persistence"
+            >
+              <strong>Chapter 14:</strong> Data Persistence
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_15/index.html"
+              aria-label="JavaScript Chapter 15: Working with Media"
+            >
+              <strong>Chapter 15:</strong> Media Handling
+            </a>
+            <a
+              href="./JavaScriptChapter/Chapter_16/index.html"
+              aria-label="JavaScript Chapter 16: Web Applications"
+            >
+              <strong>Chapter 16:</strong> Web Applications
+            </a>
+          </div>
+        </li>
+
+        <li><a href="./contact.html" aria-label="Contact Page">Contact</a></li>
+      </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <main>
+      <section class="animation-container" aria-labelledby="tech-title">
+        <h1 id="tech-title" class="sr-only">
+          Web Technologies: HTML, CSS, JavaScript
+        </h1>
+        <figure class="tech-card">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/732/732212.png"
+            alt="HTML5 Logo - Markup language for structuring web content"
+            title="HTML5 for Web Structure"
+            class="tech-icon"
+            loading="lazy"
+            width="160"
+            height="160"
+          />
+          <figcaption>HTML5</figcaption>
+          <p class="sr-only">HyperText Markup Language for web structure</p>
+        </figure>
+        <figure class="tech-card">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/732/732190.png"
+            alt="CSS3 Logo - Styling language for web design and layout"
+            title="CSS3 for Styling"
+            class="tech-icon"
+            loading="lazy"
+            width="160"
+            height="160"
+          />
+          <figcaption>CSS3</figcaption>
+          <p class="sr-only">Cascading Style Sheets for web design</p>
+        </figure>
+        <figure class="tech-card">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/5968/5968292.png"
+            alt="JavaScript Logo - Programming language for web interactivity"
+            title="JavaScript for Interactivity"
+            class="tech-icon"
+            loading="lazy"
+            width="160"
+            height="160"
+          />
+          <figcaption>JavaScript</figcaption>
+          <p class="sr-only">JavaScript for web interactivity</p>
+        </figure>
+      </section>
+
+      <!-- Progress Section -->
+      <section class="progress-section" aria-labelledby="progress-title">
+        <h3 id="progress-title">Learning Progress</h3>
+        <div
+          class="progress-bar"
+          role="progressbar"
+          aria-valuenow="75"
+          aria-valuemin="0"
+          aria-valuemax="100"
+        >
+          <div class="progress-fill"></div>
+        </div>
+        <p>
+          You've completed <strong>75%</strong> of the web development course.
+          Keep going!
+        </p>
+      </section>
+
+      <!-- Identity Section -->
+      <section class="student-identity" aria-labelledby="identity-title">
+        <h2 id="identity-title" class="sr-only">Project Information</h2>
+        <article
+          class="identity-box student-info"
+          itemscope
+          itemtype="https://schema.org/Person"
+        >
+          <h3>Submitted By:</h3>
+          <ul>
+            <li>
+              <strong>Name:</strong>
+              <span itemprop="name">Md. Didarul Alam Chowdhury</span>
+            </li>
+            <li><strong>Batch ID:</strong> CS/SCSL-M/68/01</li>
+            <li>
+              <strong>Trainee ID:</strong>
+              <span itemprop="identifier">1292886</span>
+            </li>
+            <li itemprop="knowsAbout">
+              Cross Platform Apps using ASP.NET, Angular & React
+            </li>
+          </ul>
+        </article>
+        <article
+          class="identity-box consultant-info"
+          itemscope
+          itemtype="https://schema.org/Organization"
+        >
+          <h3>Submitted To:</h3>
+          <ul>
+            <li>
+              <strong>Name:</strong>
+              <span itemprop="founder">Syed Zahidul Hassan</span>
+            </li>
+            <li>
+              <strong>Contact:</strong>
+              <span itemprop="name">Show & Tell Consulting Ltd</span>
+            </li>
+            <li>
+              <strong>Submission Date:</strong>
+              <time datetime="2026-01-21">21st January 2026</time>
+            </li>
+          </ul>
+        </article>
+      </section>
+
+      <!-- Description -->
+      <section class="general-description" aria-labelledby="description-title">
+        <h2 id="description-title">
+          Exploring HTML, CSS, and JavaScript in Action
+        </h2>
+        <p>
+          Welcome to this comprehensive web development learning platform, a
+          practical demonstration of HTML5, CSS3, and modern JavaScript
+          integration. This project showcases how these essential web
+          technologies work together to build responsive, interactive, and
+          accessible websites. Through structured examples, adaptive layouts,
+          and dynamic features, you'll explore best practices in front-end
+          development including semantic markup, efficient styling, and clean
+          scripting.
+        </p>
+      </section>
+
+      <!-- Contact + Login + Vertical Nav -->
+      <section class="contact-login" aria-labelledby="tools-title">
+        <h2 id="tools-title" class="sr-only">Tools and Navigation</h2>
+
+        <article class="student-contact-info">
+          <h3>Contact Information</h3>
+          <p>
+            <strong>Email:</strong>
+            <a
+              href="mailto:chowdhuryd243@gmail.com"
+              aria-label="Send email to chowdhuryd243@gmail.com"
+              >chowdhuryd243@gmail.com</a
+            >
+          </p>
+          <p>
+            <strong>Phone:</strong>
+            <a href="tel:+8801929179586" aria-label="Call +880 1929 179586"
+              >+880 1929 179586</a
+            >
+          </p>
+          <p>
+            <strong>GitHub:</strong>
+            <a
+              href="https://github.com/didar-dev"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Visit GitHub profile (opens in new tab)"
+              >github.com/didar-dev</a
+            >
+          </p>
+        </article>
+
+        <nav class="vertical-nav" aria-label="Quick Navigation">
+          <h3>Quick Links</h3>
+          <ul>
+            <li><a href="./index.html">Home</a></li>
+            <li><a href="./about.html">About This Project</a></li>
+            <li><a href="./HTML_Chapter/">HTML Tutorials</a></li>
+            <li><a href="./CSS_Chapter/">CSS Tutorials</a></li>
+            <li><a href="./JavaScriptChapter/">JavaScript Tutorials</a></li>
+            <li><a href="./projects/">Project Examples</a></li>
+            <li><a href="./contact.html">Contact & Support</a></li>
+          </ul>
+        </nav>
+
+        <article class="login-form">
+          <h3>Learning Dashboard</h3>
+          <form id="loginForm" aria-label="Login form">
+            <label for="email" class="sr-only">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              placeholder="Enter your email"
+              required
+              aria-required="true"
+            />
+
+            <label for="password" class="sr-only">Password</label>
+            <input
+              type="password"
+              id="password"
+              placeholder="Enter password"
+              required
+              aria-required="true"
+            />
+
+            <button type="submit">Access Learning Portal</button>
+            <p style="margin-top: 1rem; font-size: 0.9rem">
+              <a href="./register.html" aria-label="Create new account"
+                >Create Account</a
+              >
+              |
+              <a href="./forgot-password.html" aria-label="Reset password"
+                >Forgot Password?</a
+              >
+            </p>
+          </form>
+        </article>
+      </section>
+
+      <!-- Recommended Additional Pages -->
+      <section class="general-description" aria-labelledby="recommended-title">
+        <h2 id="recommended-title">Recommended Learning Path</h2>
+        <div
+          style="
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+          "
+        >
+          <article
+            style="
+              background: rgba(15, 30, 60, 0.8);
+              padding: 1.5rem;
+              border-radius: 10px;
+              border-left: 4px solid #4fc3f7;
+            "
+          >
+            <h3>🎯 Beginner Track</h3>
+            <ul style="list-style: none; margin-top: 1rem">
+              <li>
+                <a href="./HTML_Chapter/Chapter_1/index.html">HTML Basics</a>
+              </li>
+              <li>
+                <a href="./CSS_Chapter/Chapter_11/index.html"
+                  >CSS Introduction</a
+                >
+              </li>
+              <li>
+                <a href="./JavaScriptChapter/Chapter_1/index.html"
+                  >JS Fundamentals</a
+                >
+              </li>
+              <li>
+                <a href="./projects/beginner-portfolio.html"
+                  >Build Your First Portfolio</a
+                >
+              </li>
+            </ul>
+          </article>
+          <article
+            style="
+              background: rgba(15, 30, 60, 0.8);
+              padding: 1.5rem;
+              border-radius: 10px;
+              border-left: 4px solid #81c784;
+            "
+          >
+            <h3>🚀 Intermediate Track</h3>
+            <ul style="list-style: none; margin-top: 1rem">
+              <li>
+                <a href="./HTML_Chapter/Chapter_5/index.html">Advanced Forms</a>
+              </li>
+              <li>
+                <a href="./CSS_Chapter/Chapter_20/index.html">CSS Animations</a>
+              </li>
+              <li>
+                <a href="./JavaScriptChapter/Chapter_9/index.html">Async JS</a>
+              </li>
+              <li>
+                <a href="./projects/ecommerce-demo.html">E-commerce Demo</a>
+              </li>
+            </ul>
+          </article>
+          <article
+            style="
+              background: rgba(15, 30, 60, 0.8);
+              padding: 1.5rem;
+              border-radius: 10px;
+              border-left: 4px solid #ff9800;
+            "
+          >
+            <h3>🏆 Advanced Track</h3>
+            <ul style="list-style: none; margin-top: 1rem">
+              <li>
+                <a href="./projects/spa-application.html"
+                  >Single Page Application</a
+                >
+              </li>
+              <li>
+                <a href="./projects/api-integration.html">API Integration</a>
+              </li>
+              <li>
+                <a href="./projects/responsive-dashboard.html"
+                  >Admin Dashboard</a
+                >
+              </li>
+              <li>
+                <a href="./projects/fullstack-project.html"
+                  >Full Stack Project</a
+                >
+              </li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <p>
+          &copy; <span itemprop="copyrightYear">2026</span>
+          <span
+            itemprop="copyrightHolder"
+            itemscope
+            itemtype="https://schema.org/Person"
+          >
+            <span itemprop="name">Didar Chowdhury</span>
+          </span>
+          | Web Development Learning Project
+        </p>
+
+        <div class="footer-links" aria-label="Footer links">
+          <a href="./privacy-policy.html" aria-label="Privacy Policy"
+            >Privacy Policy</a
+          >
+          <a href="./terms-of-use.html" aria-label="Terms of Use"
+            >Terms of Use</a
+          >
+          <a href="./sitemap.html" aria-label="Sitemap">Sitemap</a>
+          <a href="./faq.html" aria-label="Frequently Asked Questions">FAQ</a>
+          <a href="./resources.html" aria-label="Learning Resources"
+            >Resources</a
+          >
+        </div>
+
+        <p style="margin-top: 1rem; font-size: 0.9rem; color: #bbb">
+          This project is part of the
+          <strong>Cross Platform Apps using ASP.NET, Angular & React</strong>
+          course
+        </p>
+      </div>
+    </footer>
+
+    <!-- Schema Markup -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "LearningResource",
+        "name": "Web Development Tutorial Project",
+        "description": "Comprehensive web development learning platform covering HTML5, CSS3, and JavaScript",
+        "url": "https://yourdomain.com",
+        "teaches": [
+          "HTML",
+          "CSS",
+          "JavaScript",
+          "Web Development",
+          "Frontend Programming"
+        ],
+        "educationalLevel": "Beginner to Advanced",
+        "learningResourceType": "Tutorial",
+        "author": {
+          "@type": "Person",
+          "name": "Md. Didarul Alam Chowdhury",
+          "email": "chowdhuryd243@gmail.com"
+        },
+        "datePublished": "2026-01-21",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Show & Tell Consulting Ltd"
+        },
+        "timeRequired": "P100H",
+        "hasPart": [
+          {
+            "@type": "LearningResource",
+            "name": "HTML5 Tutorial Series",
+            "url": "https://yourdomain.com/HTML_Chapter/"
+          },
+          {
+            "@type": "LearningResource",
+            "name": "CSS3 Tutorial Series",
+            "url": "https://yourdomain.com/CSS_Chapter/"
+          },
+          {
+            "@type": "LearningResource",
+            "name": "JavaScript Tutorial Series",
+            "url": "https://yourdomain.com/JavaScriptChapter/"
+          }
+        ]
+      }
+    </script>
+
+    <!-- JavaScript for interactivity -->
+    <script>
+      // Login form handling
+      document
+        .getElementById("loginForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          // Basic validation
+          if (email && password) {
+            alert("Welcome back! Redirecting to your dashboard...");
+            // In real implementation, you would handle actual login here
+            // window.location.href = './dashboard.html';
+          }
+        });
+
+      // Stable dropdown menu: hover on desktop, click/tap on mobile
+      const dropdownButtons = document.querySelectorAll(".dropbtn");
+
+      dropdownButtons.forEach((button) => {
+        button.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+
+          const currentDropdown = button.closest(".dropdown");
+          const isOpen = currentDropdown.classList.contains("open");
+
+          document.querySelectorAll(".dropdown.open").forEach((dropdown) => {
+            if (dropdown !== currentDropdown) {
+              dropdown.classList.remove("open");
+              const btn = dropdown.querySelector(".dropbtn");
+              if (btn) btn.setAttribute("aria-expanded", "false");
+            }
+          });
+
+          currentDropdown.classList.toggle("open", !isOpen);
+          button.setAttribute("aria-expanded", String(!isOpen));
+        });
+
+        button.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            button.click();
+          }
+
+          if (e.key === "Escape") {
+            const dropdown = button.closest(".dropdown");
+            dropdown.classList.remove("open");
+            button.setAttribute("aria-expanded", "false");
+            button.focus();
+          }
+        });
+      });
+
+      document.addEventListener("click", () => {
+        document.querySelectorAll(".dropdown.open").forEach((dropdown) => {
+          dropdown.classList.remove("open");
+          const button = dropdown.querySelector(".dropbtn");
+          if (button) button.setAttribute("aria-expanded", "false");
+        });
+      });
+
+      document.querySelectorAll(".dropdown-content").forEach((menu) => {
+        menu.addEventListener("click", (e) => e.stopPropagation());
+      });
+
+      // Progress bar animation
+      document.addEventListener("DOMContentLoaded", () => {
+        const progressFill = document.querySelector(".progress-fill");
+        setTimeout(() => {
+          progressFill.style.width = "75%";
+        }, 500);
+      });
+
+      // SEO: Track outbound links
+      document.querySelectorAll('a[href^="http"]').forEach((link) => {
+        link.addEventListener("click", function () {
+          if (this.target === "_blank") {
+            // You could send analytics data here
+            console.log("Outbound link clicked:", this.href);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

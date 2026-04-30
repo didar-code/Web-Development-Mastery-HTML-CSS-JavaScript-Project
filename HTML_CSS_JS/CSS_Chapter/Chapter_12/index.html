@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 12 | CSS Selectors</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-1: #101728;
+        --bg-2: #16213e;
+        --primary: #4fc3f7;
+        --secondary: #81c784;
+        --danger: #ff6b6b;
+        --warning: #ffd166;
+        --text: #eef6ff;
+        --muted: #b8c7d9;
+        --card: rgba(15, 30, 60, 0.82);
+        --card-soft: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        color: var(--text);
+        background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        line-height: 1.6;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(
+            circle at 15% 20%,
+            rgba(79, 195, 247, 0.17),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 85% 18%,
+            rgba(129, 199, 132, 0.15),
+            transparent 26%
+          ),
+          radial-gradient(
+            circle at 50% 90%,
+            rgba(255, 209, 102, 0.1),
+            transparent 30%
+          );
+      }
+
+      .top-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.9rem 5%;
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.96),
+          rgba(39, 174, 96, 0.96)
+        );
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
+      }
+
+      .brand {
+        text-decoration: none;
+        color: white;
+        font-weight: 800;
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-link,
+      .home-btn {
+        text-decoration: none;
+        color: white;
+        font-weight: 700;
+        border-radius: 999px;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.14);
+        transition: 0.25s ease;
+      }
+
+      .nav-link:hover,
+      .home-btn:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      .nav-link.active {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: #07111f;
+      }
+
+      .hero {
+        width: min(1180px, 92%);
+        margin: 3rem auto 1.5rem;
+        padding: 2.5rem;
+        border-radius: 28px;
+        background: linear-gradient(
+          135deg,
+          rgba(15, 30, 60, 0.84),
+          rgba(25, 47, 89, 0.72)
+        );
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        color: var(--muted);
+        margin-top: 1rem;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        width: min(1180px, 92%);
+        margin: auto;
+      }
+
+      .stat-card {
+        padding: 1.2rem;
+        border-radius: 18px;
+        background: var(--card-soft);
+        border: 1px solid var(--border);
+      }
+
+      .stat-card strong {
+        display: block;
+        font-size: 1.4rem;
+        color: var(--primary);
+      }
+
+      .main-grid {
+        width: min(1180px, 92%);
+        margin: 2rem auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.3rem;
+      }
+
+      .section-box {
+        padding: 2rem;
+        border-radius: 22px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .section-box.full {
+        grid-column: 1/-1;
+      }
+
+      .section-box h2 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid rgba(79, 195, 247, 0.22);
+      }
+
+      .section-box h3 {
+        color: var(--secondary);
+        margin: 1rem 0 0.6rem;
+      }
+
+      p {
+        color: var(--muted);
+      }
+
+      .code-line {
+        display: inline-block;
+        margin-top: 0.7rem;
+        padding: 0.7rem 1rem;
+        border-radius: 12px;
+        background: rgba(79, 195, 247, 0.13);
+        color: #eaffff;
+        font-weight: 800;
+      }
+
+      .demo-box {
+        padding: 1rem;
+        margin: 0.8rem 0;
+        border: 2px solid rgba(129, 199, 132, 0.7);
+        border-radius: 14px;
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-weight: 700;
+        transition: 0.25s ease;
+      }
+
+      .highlight {
+        background: rgba(79, 195, 247, 0.18);
+        border-color: var(--primary);
+      }
+
+      #special-box {
+        background: rgba(255, 209, 102, 0.18);
+        border-color: var(--warning);
+      }
+
+      .box.active {
+        background: rgba(129, 199, 132, 0.28);
+        border-color: var(--secondary);
+      }
+
+      .hover-demo:hover {
+        background: rgba(79, 195, 247, 0.25);
+        cursor: pointer;
+        transform: translateY(-2px);
+      }
+
+      input {
+        width: min(100%, 420px);
+        padding: 0.85rem 1rem;
+        border-radius: 12px;
+        border: 2px solid rgba(255, 255, 255, 0.18);
+        background: rgba(255, 255, 255, 0.09);
+        color: white;
+        margin: 0.35rem 0;
+      }
+
+      input::placeholder {
+        color: #cbd7e6;
+      }
+
+      input:focus {
+        border: 2px solid var(--danger);
+        outline: none;
+      }
+
+      input:enabled {
+        background: rgba(129, 199, 132, 0.12);
+        border-color: rgba(129, 199, 132, 0.75);
+      }
+
+      input:disabled {
+        background: rgba(238, 238, 238, 0.12);
+        border: 2px dashed gray;
+        cursor: not-allowed;
+      }
+
+      input:checked + label {
+        color: #07111f;
+        background: var(--secondary);
+        padding: 0.35rem 0.7rem;
+        border-radius: 8px;
+        font-weight: 800;
+      }
+
+      input:required {
+        border-color: orange;
+      }
+
+      input:valid {
+        border-color: var(--secondary);
+      }
+
+      input:invalid {
+        border-color: var(--danger);
+      }
+
+      .child-demo p:first-child {
+        color: #ff8a8a;
+      }
+
+      .child-demo p:last-child {
+        color: #7dd3fc;
+      }
+
+      .child-demo p:nth-child(2) {
+        background: rgba(255, 209, 102, 0.16);
+        border-radius: 10px;
+        padding: 0.5rem;
+      }
+
+      input[type="text"] {
+        background: rgba(79, 195, 247, 0.13);
+      }
+
+      input[type="email"] {
+        background: rgba(255, 107, 107, 0.13);
+      }
+
+      input[type="password"] {
+        background: rgba(129, 199, 132, 0.13);
+      }
+
+      .first-letter::first-letter {
+        font-size: 42px;
+        color: var(--danger);
+        font-weight: 900;
+      }
+
+      .first-line::first-line {
+        color: var(--primary);
+        font-weight: 900;
+      }
+
+      .before::before {
+        content: "📌 Note: ";
+        color: var(--secondary);
+        font-weight: 900;
+      }
+
+      .after::after {
+        content: " ✅";
+        color: var(--warning);
+        font-weight: 900;
+      }
+
+      .selection::selection {
+        background: yellow;
+        color: black;
+      }
+
+      .descendant p {
+        color: var(--secondary);
+      }
+
+      .child > p {
+        color: var(--primary);
+        font-weight: 900;
+      }
+
+      .adjacent h3 + p {
+        color: #d8b4fe;
+        font-style: italic;
+      }
+
+      .sibling h3 ~ p {
+        color: #fca5a5;
+      }
+
+      [title] {
+        color: var(--secondary);
+        font-weight: 900;
+      }
+
+      [lang|="en"] {
+        border-left: 4px solid var(--primary);
+        padding-left: 0.7rem;
+      }
+
+      [class~="special"] {
+        background: rgba(255, 209, 102, 0.16);
+        font-style: italic;
+        padding: 0.7rem;
+        border-radius: 12px;
+      }
+
+      [href^="https"] {
+        color: var(--danger);
+        font-weight: 900;
+      }
+
+      [src$=".png"] {
+        border: 3px solid #d8b4fe;
+      }
+
+      .image-row {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .image-row img {
+        width: min(100%, 300px);
+        border-radius: 14px;
+        object-fit: cover;
+      }
+
+      .bottom-action {
+        text-align: center;
+        margin: 2rem 0 3rem;
+      }
+
+      .home-btn {
+        display: inline-block;
+        background: linear-gradient(90deg, #4fc3f7, #81c784);
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--muted);
+      }
+
+      @media (max-width: 900px) {
+        .stats,
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .top-nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .nav-actions {
+          justify-content: center;
+        }
+
+        .hero,
+        .section-box {
+          padding: 1.4rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="top-nav">
+      <a href="../../project.html" class="brand">📚 WebDev Mastery</a>
+
+      <div class="nav-actions">
+        <a href="../../project.html" class="nav-link">Home</a>
+        <a href="../Chapter_11/index.html" class="nav-link">Previous</a>
+        <a href="#" class="nav-link active">Chapter 12</a>
+        <a href="../Chapter_13/index.html" class="nav-link">Next</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <h1>📘 Chapter 12: CSS Selectors</h1>
+      <p>
+        Universal selector, type selector, ID selector, class selector,
+        pseudo-class, pseudo-elements, combinators, and attribute selectors.
+      </p>
+    </header>
+
+    <section class="stats">
+      <div class="stat-card">
+        <strong>09</strong>
+        <span>Main Selector Topics</span>
+      </div>
+      <div class="stat-card">
+        <strong>CSS</strong>
+        <span>Selector Practice</span>
+      </div>
+      <div class="stat-card">
+        <strong>100%</strong>
+        <span>Responsive Layout</span>
+      </div>
+    </section>
+
+    <main class="main-grid">
+      <section class="section-box">
+        <h2>2.1 Universal & Type Selector</h2>
+        <p>This paragraph is styled using the type selector.</p>
+        <p>Universal selector applies box sizing to all elements.</p>
+        <span class="code-line">* { box-sizing: border-box; }</span>
+      </section>
+
+      <section class="section-box">
+        <h2>2.3 ID Selector</h2>
+        <div class="demo-box" id="special-box">
+          This div uses an ID selector: #special-box
+        </div>
+      </section>
+
+      <section class="section-box">
+        <h2>2.4 Class Selector</h2>
+        <div class="demo-box highlight">Class selector applied</div>
+        <div class="demo-box highlight">Same class, same style</div>
+      </section>
+
+      <section class="section-box">
+        <h2>2.5 Multiple-class Selector</h2>
+        <div class="demo-box box active">Box with multiple classes</div>
+        <div class="demo-box box">Normal box</div>
+      </section>
+
+      <section class="section-box full">
+        <h2>2.6 CSS Pseudo-class</h2>
+        <div class="demo-box hover-demo">Hover over this box</div>
+        <input type="text" placeholder="Click to focus" />
+        <p><a href="#">Hover this link</a></p>
+      </section>
+
+      <section class="section-box">
+        <h2>2.6.3.1 :enabled</h2>
+        <div class="demo-box">
+          <input type="text" placeholder="Enabled input field" />
+        </div>
+      </section>
+
+      <section class="section-box">
+        <h2>2.6.3.2 :disabled</h2>
+        <div class="demo-box">
+          <input type="text" placeholder="Disabled input field" disabled />
+        </div>
+      </section>
+
+      <section class="section-box full">
+        <h2>2.6.3.3 :checked</h2>
+        <div class="demo-box">
+          <h3>Checked With Checkbox</h3>
+
+          <input type="checkbox" id="opt1" />
+          <label for="opt1">Option 1</label><br /><br />
+
+          <input type="checkbox" id="opt2" />
+          <label for="opt2">Option 2</label><br /><br />
+
+          <input type="checkbox" id="opt3" />
+          <label for="opt3">Option 3</label>
+
+          <h3>Checked With Radio</h3>
+
+          <input type="radio" name="choice" id="radio1" />
+          <label for="radio1">Choice A</label><br /><br />
+
+          <input type="radio" name="choice" id="radio2" />
+          <label for="radio2">Choice B</label><br /><br />
+
+          <input type="radio" name="choice" id="radio3" />
+          <label for="radio3">Choice C</label>
+        </div>
+      </section>
+
+      <section class="section-box">
+        <h2>2.6.4 Form Validation</h2>
+        <div class="demo-box">
+          <input type="text" placeholder="Required field" required /><br />
+          <input type="email" placeholder="Enter email" required />
+        </div>
+      </section>
+
+      <section class="section-box">
+        <h2>2.6.5 Child Elements</h2>
+        <div class="demo-box child-demo">
+          <p>First child</p>
+          <p>Second child</p>
+          <p>Last child</p>
+        </div>
+      </section>
+
+      <section class="section-box full">
+        <h2>2.6.6 Type of Elements</h2>
+        <div class="demo-box">
+          <input type="text" placeholder="Text input" /><br />
+          <input type="email" placeholder="Email input" /><br />
+          <input type="password" placeholder="Password input" />
+        </div>
+      </section>
+
+      <section class="section-box">
+        <h2>2.7.1 ::first-letter</h2>
+        <p class="first-letter">
+          Pseudo-elements allow styling of specific parts of elements, like the
+          first letter.
+        </p>
+      </section>
+
+      <section class="section-box">
+        <h2>2.7.2 ::first-line</h2>
+        <p class="first-line">
+          This paragraph demonstrates styling the first line only. Notice the
+          first line is bold and blue.
+        </p>
+      </section>
+
+      <section class="section-box">
+        <h2>2.7.3 ::before</h2>
+        <p class="before">
+          Content can be added before the element using ::before pseudo-element.
+        </p>
+      </section>
+
+      <section class="section-box">
+        <h2>2.7.4 ::after</h2>
+        <p class="after">
+          Content can also be added after the element using ::after
+          pseudo-element.
+        </p>
+      </section>
+
+      <section class="section-box full">
+        <h2>2.7.5 ::selection</h2>
+        <p class="selection">
+          Try selecting this text with your mouse to see the ::selection
+          pseudo-element in action.
+        </p>
+      </section>
+
+      <section class="section-box descendant">
+        <h2>2.8.1 Descendant Selector</h2>
+        <div>
+          <p>This paragraph is inside a div → styled by .descendant p</p>
+        </div>
+      </section>
+
+      <section class="section-box child">
+        <h2>2.8.2 Child Selector</h2>
+        <p>This paragraph is a direct child → styled by .child &gt; p</p>
+        <div>
+          <p>This paragraph is not direct child → not styled</p>
+        </div>
+      </section>
+
+      <section class="section-box adjacent">
+        <h2>2.8.3 Adjacent Sibling Selector</h2>
+        <h3>Heading 1</h3>
+        <p>This paragraph immediately follows the h3 → styled by h3 + p</p>
+        <p>This paragraph does not immediately follow h3 → not styled</p>
+      </section>
+
+      <section class="section-box sibling">
+        <h2>2.8.4 General Sibling Selector</h2>
+        <h3>Heading 2</h3>
+        <p>All paragraphs after h3 → styled by h3 ~ p</p>
+        <p>Another paragraph → also styled</p>
+      </section>
+
+      <section class="section-box">
+        <h2>2.9.1 [attribute]</h2>
+        <p title="tooltip">
+          This paragraph has a title attribute → styled by [title]
+        </p>
+      </section>
+
+      <section class="section-box">
+        <h2>2.9.2 [attribute="value"]</h2>
+        <input type="text" placeholder="Text input → styled by [type='text']" />
+        <input type="password" placeholder="Password input → not styled" />
+      </section>
+
+      <section class="section-box">
+        <h2>2.9.3 [attribute|="value"]</h2>
+        <p lang="en">Paragraph with lang="en" → styled</p>
+        <p lang="en-us">Paragraph with lang="en-us" → also styled</p>
+        <p lang="fr">Paragraph with lang="fr" → not styled</p>
+      </section>
+
+      <section class="section-box">
+        <h2>2.9.4 [attribute~="value"]</h2>
+        <p class="special">Class contains word special → styled</p>
+        <p class="special highlight">Multiple words → still styled</p>
+        <p class="normal">No match → not styled</p>
+      </section>
+
+      <section class="section-box">
+        <h2>2.9.5 [attribute^="value"]</h2>
+        <a href="https://example.com">Link starts with https → styled</a><br />
+        <a href="http://example.com">Link starts with http → not styled</a>
+      </section>
+
+      <section class="section-box">
+        <h2>2.9.6 [attribute$="value"]</h2>
+        <div class="image-row">
+          <img src="./Picture/nature.jpg" alt="PNG Image styled" />
+          <img src="./Picture/universe.jpg" alt="JPG Image not styled" />
+        </div>
+      </section>
+    </main>
+
+    <div class="bottom-action">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>© 2026 WebDev Mastery</footer>
+  </body>
+</html>

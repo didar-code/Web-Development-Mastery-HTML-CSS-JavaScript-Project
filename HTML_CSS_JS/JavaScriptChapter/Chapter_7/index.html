@@ -1,0 +1,416 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 7 | JavaScript Objects</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        color: white;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 20% 30%,
+            rgba(79, 195, 247, 0.12),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(129, 199, 132, 0.12),
+            transparent 25%
+          );
+        z-index: -1;
+      }
+
+      nav {
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.95),
+          rgba(39, 174, 96, 0.95)
+        );
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .logo {
+        font-weight: 800;
+        font-size: 1.2rem;
+        text-decoration: none;
+        color: white;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        transition: 0.3s;
+      }
+
+      .nav-links a:hover,
+      .nav-links .active {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .hero {
+        text-align: center;
+        padding: 3rem 1rem 2rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        background: linear-gradient(90deg, #81c784, #4fc3f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+      }
+
+      .hero p {
+        color: #d8e6f3;
+        max-width: 800px;
+        margin: auto;
+      }
+
+      .chapter-grid {
+        max-width: 1200px;
+        margin: auto;
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .box {
+        background: rgba(15, 30, 60, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        transition: 0.3s;
+      }
+
+      .box:hover {
+        transform: translateY(-5px);
+        border-color: rgba(79, 195, 247, 0.4);
+      }
+
+      .box h2 {
+        color: #4fc3f7;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        border-bottom: 2px solid rgba(79, 195, 247, 0.2);
+        padding-bottom: 0.7rem;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 0.9rem;
+        margin-top: 0.7rem;
+        border-radius: 10px;
+        border: 2px solid rgba(79, 195, 247, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-size: 1rem;
+      }
+
+      button {
+        padding: 13px 24px;
+        margin-top: 12px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.35s;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      }
+
+      .output {
+        margin-top: 1rem;
+        padding: 0.9rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.07);
+        border-left: 4px solid #81c784;
+        font-weight: 700;
+        min-height: 45px;
+      }
+
+      #log {
+        background: #020617;
+        color: #22c55e;
+        padding: 15px;
+        border-radius: 12px;
+        font-family: monospace;
+        height: 180px;
+        overflow-y: auto;
+      }
+
+      .home-wrap {
+        text-align: center;
+        margin: 2rem 0 3rem;
+      }
+
+      .home-btn {
+        display: inline-block;
+        padding: 13px 28px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #334155, #475569);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(15, 30, 60, 0.92);
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        .nav-links {
+          justify-content: center;
+        }
+        button,
+        .home-btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <a href="../../project.html" class="logo">📚 WebDev Mastery</a>
+      <ul class="nav-links">
+        <li><a href="../../project.html">Home</a></li>
+        <li><a href="../Chapter_6/index.html">Previous Chapter</a></li>
+        <li><a href="#" class="active">Chapter 7</a></li>
+        <li><a href="../Chapter_8/index.html">Next Chapter</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero">
+      <h1>📘 JavaScript Objects</h1>
+      <p>
+        Explore object properties, merging, freezing, cloning, enums and dynamic
+        object behavior in JavaScript.
+      </p>
+    </section>
+
+    <main class="chapter-grid">
+      <div class="box">
+        <h2>7.1 Checking Object Type</h2>
+        <input id="typeInput" placeholder="Enter value" />
+        <button onclick="checkTypes()">Check Type</button>
+        <p id="typeOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>7.2 Object Literal Bundle</h2>
+        <input id="firstNameInput" placeholder="First Name" />
+        <input id="lastNameInput" placeholder="Last Name" />
+        <button onclick="showStudent()">Show Student</button>
+        <p id="studentOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>7.3 Checking Property</h2>
+        <input id="propInput" placeholder="Property name" />
+        <button onclick="checkProperty()">Check Property</button>
+        <p id="propOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>7.6 Merging Objects</h2>
+        <input id="countryInput" placeholder="Country" />
+        <input id="cityInput" placeholder="City" />
+        <button onclick="mergeObjects()">Merge Objects</button>
+        <p id="mergeOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>7.8 Preventing Changes (freeze)</h2>
+        <input id="freezeInput" placeholder="Try changing first name" />
+        <button onclick="freezeTest()">Test Freeze</button>
+        <p id="freezeOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>7.10 & 7.11 Cloning Objects</h2>
+        <input id="scoreInput" placeholder="Enter score" />
+        <button onclick="cloneTest()">Clone Student</button>
+        <p id="cloneOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>7.13 Enums with Symbol</h2>
+        <select id="lightSelect">
+          <option value="Green">Green</option>
+          <option value="Yellow">Yellow</option>
+          <option value="Red">Red</option>
+        </select>
+        <button onclick="runEnum()">Run Traffic Light</button>
+        <p id="enumOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>📜 Event Log</h2>
+        <div id="log"></div>
+      </div>
+    </main>
+
+    <div class="home-wrap">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>© 2026 WebDev Mastery | JavaScript Learning Project</footer>
+
+    <script>
+      function logEvent(msg) {
+        const log = document.getElementById("log");
+        log.innerHTML += `[${new Date().toLocaleTimeString()}] ${msg}<br>`;
+        log.scrollTop = log.scrollHeight;
+      }
+
+      function checkTypes() {
+        let val = document.getElementById("typeInput").value;
+        let output = "";
+        if (!isNaN(Date.parse(val))) val = new Date(val);
+        else if (!isNaN(val)) val = Number(val);
+
+        output += val instanceof Date ? "✅ Date Object" : "";
+        output += typeof val === "number" ? "✅ Number" : "";
+        output += typeof val === "string" ? "✅ String" : "";
+
+        document.getElementById("typeOutput").textContent =
+          output || "❌ Unknown Type";
+        logEvent("Checked type");
+      }
+
+      function showStudent() {
+        const first =
+          document.getElementById("firstNameInput").value || "Didarul";
+        const last =
+          document.getElementById("lastNameInput").value || "Chowdhury";
+
+        const student = {
+          firstName: first,
+          lastName: last,
+          birthDate: new Date(1997, 10, 15),
+        };
+
+        document.getElementById("studentOutput").innerHTML =
+          `Name: ${student.firstName} ${student.lastName}<br>DOB: ${student.birthDate.toDateString()}`;
+
+        logEvent("Displayed student object");
+      }
+
+      function checkProperty() {
+        const prop = document.getElementById("propInput").value;
+        const student = {
+          firstName: "Didarul",
+          lastName: "Chowdhury",
+          birthDate: new Date(1997, 10, 15),
+        };
+        document.getElementById("propOutput").textContent =
+          prop in student ? student[prop] : "Property not found";
+        logEvent("Checked property");
+      }
+
+      function mergeObjects() {
+        const country =
+          document.getElementById("countryInput").value || "Bangladesh";
+        const city = document.getElementById("cityInput").value || "Dhaka";
+
+        const student = { firstName: "Didarul", lastName: "Chowdhury" };
+        const merged = { ...student, country, city };
+
+        document.getElementById("mergeOutput").innerHTML =
+          `${merged.firstName} ${merged.lastName}<br>${merged.country}, ${merged.city}`;
+
+        logEvent("Merged objects");
+      }
+
+      function freezeTest() {
+        const frozenStudent = { firstName: "Didarul" };
+        Object.freeze(frozenStudent);
+        document.getElementById("freezeOutput").textContent =
+          `Frozen Name: ${frozenStudent.firstName}`;
+        logEvent("Freeze tested");
+      }
+
+      function cloneTest() {
+        const firstScore =
+          parseInt(document.getElementById("scoreInput").value) || 85;
+        const original = { firstName: "Didar", scores: [85, 90, 95] };
+
+        const shallow = { ...original };
+        shallow.scores[0] = firstScore;
+
+        const deep = { ...original, scores: [...original.scores] };
+        deep.scores[0] = firstScore + 10;
+
+        document.getElementById("cloneOutput").innerHTML =
+          `Shallow: ${shallow.scores}<br>Deep: ${deep.scores}`;
+
+        logEvent("Cloned object");
+      }
+
+      function runEnum() {
+        const sel = document.getElementById("lightSelect").value;
+        let msg = "";
+        if (sel === "Green") msg = "Go";
+        else if (sel === "Yellow") msg = "Ready";
+        else msg = "Stop";
+
+        document.getElementById("enumOutput").textContent = `${sel} → ${msg}`;
+        logEvent("Traffic light selected");
+      }
+    </script>
+  </body>
+</html>

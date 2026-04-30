@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 1 | JavaScript Working on Webpage</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-1: #101728;
+        --bg-2: #16213e;
+        --primary: #4fc3f7;
+        --secondary: #81c784;
+        --warning: #ffb74d;
+        --danger: #ff6b6b;
+        --text: #eef6ff;
+        --muted: #b8c7d9;
+        --card: rgba(15, 30, 60, 0.82);
+        --card-soft: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        color: var(--text);
+        background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(
+            circle at 15% 20%,
+            rgba(79, 195, 247, 0.17),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 85% 18%,
+            rgba(129, 199, 132, 0.15),
+            transparent 26%
+          ),
+          radial-gradient(
+            circle at 50% 90%,
+            rgba(255, 183, 77, 0.11),
+            transparent 30%
+          );
+      }
+
+      a {
+        color: inherit;
+      }
+
+      .top-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.85rem 5%;
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.96),
+          rgba(39, 174, 96, 0.96)
+        );
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(12px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        text-decoration: none;
+        font-size: 1.08rem;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+      }
+
+      .brand span:first-child {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-link,
+      .home-btn,
+      button {
+        border: 0;
+        text-decoration: none;
+        cursor: pointer;
+        color: #ffffff;
+        font-weight: 700;
+        border-radius: 999px;
+        padding: 0.78rem 1.08rem;
+        background: rgba(255, 255, 255, 0.14);
+        transition: 0.25s ease;
+      }
+
+      .nav-link:hover,
+      .home-btn:hover,
+      button:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.23);
+      }
+
+      .hero {
+        width: min(1180px, 92%);
+        margin: 3rem auto 1.5rem;
+        padding: clamp(1.5rem, 4vw, 3rem);
+        border-radius: 28px;
+        background: linear-gradient(
+          135deg,
+          rgba(15, 30, 60, 0.84),
+          rgba(25, 47, 89, 0.72)
+        );
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "JS";
+        position: absolute;
+        right: clamp(1rem, 5vw, 4rem);
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: clamp(5rem, 18vw, 12rem);
+        font-weight: 900;
+        color: rgba(255, 255, 255, 0.045);
+        pointer-events: none;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+        background: rgba(79, 195, 247, 0.14);
+        border: 1px solid rgba(79, 195, 247, 0.28);
+        color: #c7efff;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .hero h1 {
+        max-width: 760px;
+        font-size: clamp(2rem, 5vw, 4rem);
+        line-height: 1.1;
+        margin-bottom: 1rem;
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        max-width: 720px;
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.18rem);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+        width: min(1180px, 92%);
+        margin: 0 auto 1.4rem;
+      }
+
+      .stat-card {
+        padding: 1.2rem;
+        border-radius: 18px;
+        background: var(--card-soft);
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+      }
+
+      .stat-card strong {
+        display: block;
+        font-size: 1.45rem;
+        color: var(--primary);
+      }
+
+      .stat-card span {
+        color: var(--muted);
+        font-size: 0.95rem;
+      }
+
+      .main-grid {
+        width: min(1180px, 92%);
+        margin: 2rem auto;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.35rem;
+      }
+
+      .container {
+        padding: clamp(1.2rem, 3vw, 2rem);
+        border-radius: 22px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+        transition: 0.25s ease;
+      }
+
+      .container:hover {
+        transform: translateY(-5px);
+        border-color: rgba(79, 195, 247, 0.35);
+      }
+
+      .container.full {
+        grid-column: 1 / -1;
+      }
+
+      .container h2 {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        font-size: clamp(1.35rem, 3vw, 2rem);
+        color: var(--primary);
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid rgba(79, 195, 247, 0.22);
+      }
+
+      .container p {
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.12rem);
+        margin: 0.7rem 0;
+      }
+
+      .output-box,
+      code {
+        display: inline-block;
+        max-width: 100%;
+        word-break: break-word;
+        padding: 0.75rem 1rem;
+        border-radius: 12px;
+        color: #eaffff;
+        background: rgba(79, 195, 247, 0.13);
+        border: 1px solid rgba(79, 195, 247, 0.22);
+        font-weight: 800;
+      }
+
+      .error {
+        color: #ffd1d1 !important;
+        background: rgba(255, 107, 107, 0.13);
+        border-left: 4px solid var(--danger);
+        padding: 0.8rem 1rem;
+        border-radius: 12px;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 0.85rem;
+        flex-wrap: wrap;
+        margin-top: 1rem;
+      }
+
+      button.primary {
+        background: linear-gradient(90deg, #4fc3f7, #2196f3);
+      }
+
+      button.secondary {
+        background: linear-gradient(90deg, #81c784, #43a047);
+      }
+
+      input {
+        width: 100%;
+        max-width: 720px;
+        margin-top: 1rem;
+        padding: 1rem 1.1rem;
+        border-radius: 14px;
+        border: 2px solid rgba(79, 195, 247, 0.28);
+        outline: none;
+        background: rgba(255, 255, 255, 0.09);
+        color: #ffffff;
+        font-size: 1rem;
+        transition: 0.25s ease;
+      }
+
+      input::placeholder {
+        color: #aebdd0;
+      }
+
+      input:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(79, 195, 247, 0.16);
+      }
+
+      .bottom-action {
+        width: min(1180px, 92%);
+        margin: 1rem auto 3rem;
+        display: flex;
+        justify-content: center;
+      }
+
+      .home-btn {
+        background: linear-gradient(90deg, #4fc3f7, #81c784);
+        box-shadow: 0 12px 30px rgba(79, 195, 247, 0.24);
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.7rem 5%;
+        color: var(--muted);
+        background: rgba(9, 18, 35, 0.65);
+        border-top: 1px solid var(--border);
+      }
+
+      @media (max-width: 900px) {
+        .top-nav {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .nav-actions {
+          width: 100%;
+        }
+
+        .nav-link {
+          flex: 1;
+          text-align: center;
+        }
+
+        .stats,
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .hero,
+        .container,
+        .stat-card {
+          border-radius: 18px;
+        }
+
+        .nav-actions,
+        .button-group {
+          flex-direction: column;
+        }
+
+        .nav-link,
+        button,
+        .home-btn {
+          width: 100%;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="top-nav">
+      <a
+        href="../../project.html"
+        class="brand"
+        aria-label="Go back to project home"
+      >
+        <span>📚</span>
+        <span>WebDev Mastery</span>
+      </a>
+
+      <div class="nav-actions">
+        <a href="../../project.html" class="nav-link">Home</a>
+        <a href="#examples" class="nav-link">Examples</a>
+        <a href="#practice" class="nav-link">Practice</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <span class="badge">📘 Chapter 1 • JavaScript Basics</span>
+      <h1>JavaScript Working on Webpage</h1>
+      <p>
+        This page shows how JavaScript updates text, handles errors, runs
+        functions, detects the browser environment, responds to button clicks,
+        and reads live input.
+      </p>
+    </header>
+
+    <section class="stats" aria-label="Chapter summary">
+      <article class="stat-card">
+        <strong>06</strong>
+        <span>Interactive Examples</span>
+      </article>
+      <article class="stat-card">
+        <strong>100%</strong>
+        <span>Responsive Layout</span>
+      </article>
+      <article class="stat-card">
+        <strong>JS</strong>
+        <span>DOM + Events Practice</span>
+      </article>
+    </section>
+
+    <main id="examples" class="main-grid">
+      <section class="container">
+        <h2>✅ JavaScript Output</h2>
+        <p>JavaScript can change webpage content dynamically.</p>
+        <p>
+          <span class="output-box" id="logOutput"
+            >JavaScript runs and updates this text</span
+          >
+        </p>
+      </section>
+
+      <section class="container">
+        <h2>⚠️ JavaScript Error Example</h2>
+        <p class="error">❌ Example of Syntax Error</p>
+        <p><code>const myNumber =</code></p>
+        <p>
+          When a statement is incomplete, JavaScript stops and shows an error.
+        </p>
+      </section>
+
+      <section class="container">
+        <h2>🧮 JavaScript Function</h2>
+        <p>
+          Sum from <b>10</b> to <b>15</b> =
+          <span id="range1" class="output-box"></span>
+        </p>
+        <p>
+          Sum from <b>1</b> to <b>5</b> =
+          <span id="range2" class="output-box"></span>
+        </p>
+      </section>
+
+      <section class="container">
+        <h2>🌐 Environment Detection</h2>
+        <p>JavaScript can detect where the webpage is running.</p>
+        <p><span id="serverStatus" class="output-box"></span></p>
+      </section>
+
+      <section class="container full">
+        <h2>🖱️ Button Click Event</h2>
+        <p id="pid">JavaScript can hide and show this text.</p>
+        <div class="button-group">
+          <button class="primary" onclick="displayHide()">Hide Text</button>
+          <button class="secondary" onclick="displayShow()">Show Text</button>
+        </div>
+        <p>
+          <span id="visibilityStatus" class="output-box"
+            >Click a button to see the result</span
+          >
+        </p>
+      </section>
+
+      <section id="practice" class="container full">
+        <h2>⌨️ Input Event: Live JavaScript</h2>
+        <p>
+          Type something in the input box and JavaScript will show it instantly.
+        </p>
+        <input
+          type="text"
+          id="userInput"
+          placeholder="Type something here..."
+        />
+        <p>
+          Live Output:
+          <span id="liveText" class="output-box">Waiting for input...</span>
+        </p>
+        <p>
+          Event Fired:
+          <span id="eventName" class="output-box">No event yet</span>
+        </p>
+      </section>
+    </main>
+
+    <div class="bottom-action">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>
+      <p>© 2026 WebDev Mastery | JavaScript Chapter Practice Page</p>
+    </footer>
+
+    <script>
+      document.getElementById("logOutput").textContent =
+        "JavaScript is running successfully!";
+
+      function addRange(start, end) {
+        let sum = 0;
+        for (let i = start; i <= end; i++) {
+          sum += i;
+        }
+        return sum;
+      }
+
+      document.getElementById("range1").textContent = addRange(10, 15);
+      document.getElementById("range2").textContent = addRange(1, 5);
+
+      let status = "";
+      if (window.location.protocol === "file:") {
+        status = "🟢 Running as a local file";
+      } else if (window.location.host.startsWith("localhost")) {
+        status = "🟡 Running on a local server";
+      } else {
+        status = "🔵 Running on a remote server";
+      }
+      document.getElementById("serverStatus").textContent = status;
+
+      function displayHide() {
+        document.getElementById("pid").style.visibility = "hidden";
+        document.getElementById("visibilityStatus").textContent =
+          "Element is hidden using JavaScript";
+      }
+
+      function displayShow() {
+        document.getElementById("pid").style.visibility = "visible";
+        document.getElementById("visibilityStatus").textContent =
+          "Element is visible using JavaScript";
+      }
+
+      const input = document.getElementById("userInput");
+      const liveText = document.getElementById("liveText");
+      const eventName = document.getElementById("eventName");
+
+      input.addEventListener("input", function () {
+        liveText.textContent = input.value || "Waiting for input...";
+        eventName.textContent = "input event";
+      });
+
+      input.addEventListener("keyup", function () {
+        eventName.textContent = "keyup event";
+      });
+
+      input.addEventListener("change", function () {
+        eventName.textContent = "change event";
+      });
+    </script>
+  </body>
+</html>

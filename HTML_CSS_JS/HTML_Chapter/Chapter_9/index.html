@@ -1,0 +1,448 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 9 | HTML Events</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-1: #101728;
+        --bg-2: #16213e;
+        --primary: #4fc3f7;
+        --secondary: #81c784;
+        --text: #eef6ff;
+        --muted: #b8c7d9;
+        --card: rgba(15, 30, 60, 0.82);
+        --card-soft: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        color: var(--text);
+        background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        line-height: 1.6;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(
+            circle at 15% 20%,
+            rgba(79, 195, 247, 0.17),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 85% 18%,
+            rgba(129, 199, 132, 0.15),
+            transparent 26%
+          );
+      }
+
+      .top-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.9rem 5%;
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.96),
+          rgba(39, 174, 96, 0.96)
+        );
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        text-decoration: none;
+        color: white;
+        font-weight: 800;
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-link,
+      .home-btn {
+        text-decoration: none;
+        color: white;
+        font-weight: 700;
+        border-radius: 999px;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.14);
+        transition: 0.25s ease;
+      }
+
+      .nav-link:hover,
+      .home-btn:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      .nav-link.active {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: #07111f;
+      }
+
+      .hero {
+        width: min(1180px, 92%);
+        margin: 3rem auto 1.5rem;
+        padding: 2.5rem;
+        border-radius: 28px;
+        background: linear-gradient(
+          135deg,
+          rgba(15, 30, 60, 0.84),
+          rgba(25, 47, 89, 0.72)
+        );
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        color: var(--muted);
+        margin-top: 1rem;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        width: min(1180px, 92%);
+        margin: auto;
+      }
+
+      .stat-card {
+        padding: 1.2rem;
+        border-radius: 18px;
+        background: var(--card-soft);
+        border: 1px solid var(--border);
+      }
+
+      .stat-card strong {
+        display: block;
+        font-size: 1.4rem;
+        color: var(--primary);
+      }
+
+      .main-grid {
+        width: min(1180px, 92%);
+        margin: 2rem auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.3rem;
+      }
+
+      .container {
+        padding: 2rem;
+        border-radius: 22px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .container.full {
+        grid-column: 1/-1;
+      }
+
+      .container h2 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      .container h3 {
+        color: var(--secondary);
+        margin-top: 1rem;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 0.85rem;
+        margin: 0.7rem 0;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+      }
+
+      button {
+        padding: 0.8rem 1.2rem;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(90deg, #4fc3f7, #81c784);
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      p,
+      label {
+        color: var(--muted);
+      }
+
+      .bottom-action {
+        text-align: center;
+        margin: 2rem 0 3rem;
+      }
+
+      .home-btn {
+        background: linear-gradient(90deg, #4fc3f7, #81c784);
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--muted);
+      }
+
+      @media (max-width: 900px) {
+        .stats,
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .top-nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body onload="windowOnload()">
+    <nav class="top-nav">
+      <a href="../../project.html" class="brand">📚 WebDev Mastery</a>
+
+      <div class="nav-actions">
+        <a href="../../project.html" class="nav-link">Home</a>
+        <a href="../Chapter_8/index.html" class="nav-link">Previous</a>
+        <a href="#" class="nav-link active">Chapter 9</a>
+        <a href="../Chapter_10/index.html" class="nav-link">Next</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <h1>Chapter 9 📘 HTML Events</h1>
+      <p>
+        Window events, form events, keyboard events, mouse events and clipboard
+        events.
+      </p>
+    </header>
+
+    <section class="stats">
+      <div class="stat-card">
+        <strong>5</strong>
+        <span>Event Types</span>
+      </div>
+      <div class="stat-card">
+        <strong>15+</strong>
+        <span>Examples</span>
+      </div>
+      <div class="stat-card">
+        <strong>JS</strong>
+        <span>Interactive Practice</span>
+      </div>
+    </section>
+
+    <main class="main-grid">
+      <section class="container">
+        <h2>.1 Window Events</h2>
+
+        <h3>.1.1 onload</h3>
+        <label id="msgOnload"></label>
+
+        <h3>.1.2 onresize</h3>
+        <label id="msgOnresize">Try resizing the browser window.</label>
+      </section>
+
+      <section class="container">
+        <h2>.2 Form Events</h2>
+
+        <h3>.2.1 onfocus</h3>
+        <input
+          id="txtFname"
+          type="text"
+          placeholder="Enter your first name..."
+          onfocus="focusEvent(this)"
+        />
+
+        <h3>.2.2 onblur</h3>
+        <input
+          type="text"
+          id="txtLname"
+          placeholder="Enter your last name..."
+          onblur="blurEvent()"
+        />
+
+        <h3>.2.3 onchange</h3>
+        <select id="fruitSelect" onchange="changeEvent()">
+          <option>Apple</option>
+          <option>Banana</option>
+          <option>Cherry</option>
+          <option>Mango</option>
+        </select>
+
+        <h3>.2.4 oninput</h3>
+        <input
+          type="text"
+          id="inputText"
+          oninput="inputEvent()"
+          placeholder="Ex: Coding"
+        />
+        <p id="inputOutput"></p>
+      </section>
+
+      <section class="container">
+        <h2>.3 Keyboard Events</h2>
+
+        <h3>.3.1 onkeydown</h3>
+        <input type="text" onkeydown="keyDownEvent()" />
+
+        <h3>.3.2 onkeyup</h3>
+        <input type="text" id="keyupInput" onkeyup="keyUpEvent()" />
+
+        <h3>.3.3 onkeypress</h3>
+        <input type="text" onkeypress="keyPressEvent()" />
+      </section>
+
+      <section class="container">
+        <h2>.4 Mouse Events</h2>
+
+        <h3>.4.1 onclick</h3>
+        <button onclick="clickEvent()">Click</button>
+
+        <h3>.4.2 ondblclick</h3>
+        <button ondblclick="dblClickEvent()">Double Click</button>
+
+        <h3>.4.3 onmousemove</h3>
+        <p onmousemove="enlarge(this)">Move mouse here</p>
+
+        <h3>.4.4 onmousedown & onmouseup</h3>
+        <p id="mousePara" onmousedown="mouseDown()" onmouseup="mouseUp()">
+          Click and hold me
+        </p>
+
+        <h3>.4.5 onmouseover & onmouseout</h3>
+        <p
+          onmouseover="increaseFontSize(this)"
+          onmouseout="decreaseFontSize(this)"
+        >
+          Hover here
+        </p>
+      </section>
+
+      <section class="container full">
+        <h2>.5 Clipboard Events</h2>
+
+        <h3>.5.1 oncopy</h3>
+        <input value="Copy this text" oncopy="copyEvent()" />
+
+        <h3>.5.2 oncut</h3>
+        <input value="Cut this text" oncut="cutEvent()" />
+
+        <h3>.5.3 onpaste</h3>
+        <input value="Paste here" onpaste="pasteEvent()" />
+      </section>
+    </main>
+
+    <div class="bottom-action">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>© 2026 WebDev Mastery</footer>
+
+    <script>
+      function windowOnload() {
+        alert("Welcome! The page has fully loaded!");
+        document.getElementById("msgOnload").innerText =
+          "Page loaded successfully!";
+      }
+
+      window.onresize = function () {
+        document.getElementById("msgOnresize").innerText =
+          "Window resized: " + window.innerWidth + "px";
+      };
+
+      function focusEvent(x) {
+        x.style.background = "#ffff99";
+      }
+      function blurEvent() {
+        alert(document.getElementById("txtLname").value);
+      }
+      function changeEvent() {
+        alert(document.getElementById("fruitSelect").value);
+      }
+      function inputEvent() {
+        document.getElementById("inputOutput").innerText =
+          document.getElementById("inputText").value;
+      }
+      function keyDownEvent() {
+        alert("Key Down");
+      }
+      function keyUpEvent() {
+        let x = document.getElementById("keyupInput");
+        x.value = x.value.toUpperCase();
+      }
+      function keyPressEvent() {
+        alert("Key Press");
+      }
+      function clickEvent() {
+        alert("Clicked");
+      }
+      function dblClickEvent() {
+        alert("Double Clicked");
+      }
+      function enlarge(x) {
+        x.style.fontSize = "22px";
+      }
+      function mouseDown() {
+        mousePara.style.color = "red";
+      }
+      function mouseUp() {
+        mousePara.style.color = "blue";
+      }
+      function increaseFontSize(x) {
+        x.style.fontSize = "30px";
+      }
+      function decreaseFontSize(x) {
+        x.style.fontSize = "18px";
+      }
+      function copyEvent() {
+        alert("Copied");
+      }
+      function cutEvent() {
+        alert("Cut");
+      }
+      function pasteEvent() {
+        alert("Pasted");
+      }
+    </script>
+  </body>
+</html>

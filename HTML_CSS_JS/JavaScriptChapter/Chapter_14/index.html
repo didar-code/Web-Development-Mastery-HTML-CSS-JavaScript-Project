@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 14 | Data Persistence</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #fff;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 15% 30%,
+            rgba(79, 195, 247, 0.14),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 85% 20%,
+            rgba(129, 199, 132, 0.13),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 50% 90%,
+            rgba(155, 89, 182, 0.14),
+            transparent 25%
+          );
+        z-index: -1;
+      }
+
+      nav {
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.95),
+          rgba(39, 174, 96, 0.95)
+        );
+        padding: 0.9rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+      }
+
+      .logo {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.15rem;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.55rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        transition: 0.3s ease;
+      }
+
+      .nav-links a:hover,
+      .nav-links .active {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .hero {
+        max-width: 1200px;
+        margin: 3rem auto 2rem;
+        padding: 0 1.4rem;
+        text-align: center;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        background: rgba(79, 195, 247, 0.14);
+        color: #81c784;
+        border: 1px solid rgba(79, 195, 247, 0.25);
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        background: linear-gradient(90deg, #81c784, #4fc3f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        max-width: 800px;
+        margin: 1rem auto 0;
+        color: #d8e6f3;
+      }
+
+      .chapter-grid {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1.4rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .box {
+        background: rgba(15, 30, 60, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 1.5rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
+        transition: 0.3s ease;
+      }
+
+      .box:hover {
+        transform: translateY(-6px);
+        border-color: rgba(79, 195, 247, 0.45);
+      }
+
+      .box h2 {
+        color: #4fc3f7;
+        font-size: 1.15rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.7rem;
+        border-bottom: 2px solid rgba(79, 195, 247, 0.22);
+      }
+
+      input {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        margin-top: 0.7rem;
+        border-radius: 10px;
+        border: 2px solid rgba(79, 195, 247, 0.22);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-size: 1rem;
+        outline: none;
+      }
+
+      button {
+        padding: 13px 24px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: white;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+        margin-right: 8px;
+        transition: 0.35s ease;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+      }
+
+      .data {
+        width: 100%;
+        background: rgba(255, 255, 255, 0.07);
+        padding: 12px;
+        border-radius: 10px;
+        font-weight: 700;
+        margin-top: 10px;
+        border-left: 4px solid #81c784;
+        color: #e8f4ff;
+        min-height: 50px;
+      }
+
+      .log {
+        background: #020617;
+        color: #22c55e;
+        padding: 15px;
+        border-radius: 12px;
+        font-family: monospace;
+        max-height: 180px;
+        overflow-y: auto;
+        white-space: pre-line;
+      }
+
+      ul {
+        margin-top: 12px;
+        padding-left: 20px;
+      }
+
+      li {
+        margin-bottom: 8px;
+      }
+
+      .home-wrap {
+        text-align: center;
+        margin: 2rem 0 3rem;
+      }
+
+      .home-btn {
+        display: inline-block;
+        padding: 13px 28px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #334155, #475569);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(15, 30, 60, 0.92);
+        color: #cfd8dc;
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .nav-links {
+          justify-content: center;
+        }
+
+        .chapter-grid {
+          grid-template-columns: 1fr;
+        }
+
+        button,
+        .home-btn {
+          width: 100%;
+          margin-right: 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <a href="../../project.html" class="logo">📚 WebDev Mastery</a>
+      <ul class="nav-links">
+        <li><a href="../../project.html">Home</a></li>
+        <li><a href="../Chapter_13/index.html">Previous Chapter</a></li>
+        <li><a href="#" class="active">Chapter 14</a></li>
+        <li><a href="../Chapter_15/index.html">Next Chapter</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero">
+      <span class="hero-badge">JavaScript Chapter 14</span>
+      <h1>📂 Data Persistence</h1>
+      <p>
+        Practice cookies, sessionStorage, localStorage, IndexedDB, and
+        persistent browser-side data storage systems.
+      </p>
+    </section>
+
+    <main class="chapter-grid">
+      <div class="box">
+        <h2>14.1 Cookies</h2>
+        <input type="text" id="cookieKey" placeholder="Enter key" />
+        <input type="text" id="cookieValue" placeholder="Enter value" />
+        <button id="setCookieBtn">Set Cookie</button>
+        <button id="getCookieBtn">Get Cookie</button>
+        <button id="eraseCookieBtn">Erase Cookie</button>
+        <div id="cookieOutput" class="data"></div>
+      </div>
+
+      <div class="box">
+        <h2>14.2 sessionStorage & localStorage</h2>
+        <input type="text" id="key" placeholder="Enter key" />
+        <input type="text" id="value" placeholder="Enter value" />
+        <button id="setDataBtn">Set Data</button>
+        <button id="getDataBtn">Get Data</button>
+        <button id="eraseDataBtn">Erase Data</button>
+
+        <div id="sessionstr" class="data"></div>
+        <div id="localstr" class="data"></div>
+        <div id="cookiestr" class="data"></div>
+      </div>
+
+      <div class="box">
+        <h2>14.4 IndexedDB Native</h2>
+        <button id="getRandom">Get Random Record</button>
+        <div id="idbOutput" class="data"></div>
+      </div>
+
+      <div class="box">
+        <h2>14.5 IndexedDB with idb Library</h2>
+        <input type="text" id="name" placeholder="Name" />
+        <input type="number" id="age" placeholder="Age" />
+        <button id="setBtn">Add Reader</button>
+        <button id="getBtn">Show All Readers</button>
+        <ul id="data-list"></ul>
+      </div>
+
+      <div class="box">
+        <h2>🧾 Event Log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </main>
+
+    <div class="home-wrap">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>© 2026 WebDev Mastery | Data Persistence Chapter</footer>
+
+    <script>
+      function logEvent(message) {
+        const log = document.getElementById("log");
+        log.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        log.scrollTop = log.scrollHeight;
+      }
+
+      function setCookie(key, value) {
+        const date = new Date();
+        date.setTime(date.getTime() + 7 * 24 * 60 * 60 * 1000);
+        document.cookie = `${key}=${value};expires=${date.toUTCString()};path=/`;
+        logEvent(`Set cookie: ${key}`);
+      }
+
+      function getCookie(key) {
+        const cookies = document.cookie.split("; ");
+        const cookie = cookies.find((c) => c.startsWith(key + "="));
+        return cookie ? cookie.split("=")[1] : "";
+      }
+
+      function eraseCookie(key) {
+        document.cookie = `${key}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/`;
+        logEvent(`Erased cookie: ${key}`);
+      }
+
+      setCookieBtn.onclick = () => {
+        const key = cookieKey.value;
+        const value = cookieValue.value;
+        if (!key || !value) return;
+        setCookie(key, value);
+        cookieOutput.textContent = `${key}=${value}`;
+      };
+
+      getCookieBtn.onclick = () => {
+        const key = cookieKey.value;
+        cookieOutput.textContent = getCookie(key) || "Not found";
+      };
+
+      eraseCookieBtn.onclick = () => {
+        const key = cookieKey.value;
+        eraseCookie(key);
+        cookieOutput.textContent = "Erased";
+      };
+
+      setDataBtn.onclick = () => {
+        const key = document.getElementById("key").value;
+        const value = document.getElementById("value").value;
+        sessionStorage.setItem(key, value);
+        localStorage.setItem(key, value);
+        setCookie(key, value);
+        getDataBtn.click();
+      };
+
+      getDataBtn.onclick = () => {
+        const key = document.getElementById("key").value;
+        sessionstr.textContent = sessionStorage.getItem(key) || "";
+        localstr.textContent = localStorage.getItem(key) || "";
+        cookiestr.textContent = getCookie(key) || "";
+      };
+
+      eraseDataBtn.onclick = () => {
+        const key = document.getElementById("key").value;
+        sessionStorage.removeItem(key);
+        localStorage.removeItem(key);
+        eraseCookie(key);
+        getDataBtn.click();
+      };
+
+      const data = [
+        { name: "Didar Chowdhury", age: 28, experience: 3 },
+        { name: "Wasif Adnan", age: 20, experience: 1 },
+        { name: "Tashrif Ahsan", age: 20, experience: 2 },
+      ];
+
+      let db;
+      const request = indexedDB.open("Cookbook", 1);
+
+      request.onupgradeneeded = (event) => {
+        db = event.target.result;
+        const store = db.createObjectStore("reader", {
+          keyPath: "id",
+          autoIncrement: true,
+        });
+        data.forEach((d) => store.add(d));
+      };
+
+      request.onsuccess = (event) => {
+        db = event.target.result;
+      };
+
+      getRandom.onclick = () => {
+        const tx = db.transaction(["reader"], "readonly");
+        const store = tx.objectStore("reader");
+        const id = Math.floor(Math.random() * data.length) + 1;
+        const req = store.get(id);
+
+        req.onsuccess = () => {
+          if (req.result) {
+            idbOutput.textContent = `${req.result.name} | Age ${req.result.age} | Exp ${req.result.experience}`;
+          }
+        };
+      };
+    </script>
+
+    <script type="module">
+      import { openDB } from "https://unpkg.com/idb?module";
+
+      async function initIDB() {
+        const db = await openDB("ReaderNames", 1, {
+          upgrade(db) {
+            db.createObjectStore("reader", {
+              keyPath: "id",
+              autoIncrement: true,
+            });
+          },
+        });
+
+        setBtn.onclick = async () => {
+          const name = nameInput.value.trim();
+          const age = ageInput.value.trim();
+          if (!name || !age) return;
+          await db.add("reader", { name, age });
+          nameInput.value = "";
+          ageInput.value = "";
+          logEvent(`Added ${name}`);
+        };
+
+        getBtn.onclick = async () => {
+          const readers = await db.getAll("reader");
+          dataList.innerHTML = "";
+          readers.forEach((r) => {
+            const li = document.createElement("li");
+            li.textContent = `${r.name}: ${r.age}`;
+            dataList.appendChild(li);
+          });
+        };
+
+        const nameInput = document.getElementById("name");
+        const ageInput = document.getElementById("age");
+      }
+
+      initIDB();
+      logEvent("Chapter 14 ready");
+    </script>
+  </body>
+</html>

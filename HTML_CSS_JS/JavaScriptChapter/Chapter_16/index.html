@@ -1,0 +1,338 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 16 - JavaScript Error Handling</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #0f172a, #1e293b);
+        color: white;
+        padding: 20px;
+      }
+
+      .top-nav {
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.95),
+          rgba(39, 174, 96, 0.95)
+        );
+        padding: 0.9rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+        margin-bottom: 30px;
+        border-radius: 14px;
+      }
+
+      .logo {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.15rem;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.55rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        transition: 0.3s ease;
+      }
+
+      .nav-links a:hover,
+      .nav-links .active {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.3rem;
+        margin-bottom: 30px;
+        color: #38bdf8;
+      }
+
+      .box {
+        background: rgba(255, 255, 255, 0.08);
+        backdrop-filter: blur(14px);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        transition: 0.3s;
+      }
+
+      .box:hover {
+        transform: translateY(-4px);
+      }
+
+      h2 {
+        margin-bottom: 15px;
+        color: #f8fafc;
+        font-size: 1.3rem;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 12px;
+        border: none;
+        border-radius: 12px;
+        margin-top: 10px;
+        margin-bottom: 15px;
+        font-size: 16px;
+      }
+
+      button {
+        padding: 12px 22px;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 600;
+        margin: 8px 6px 0 0;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: white;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(37, 99, 235, 0.4);
+      }
+
+      .output {
+        margin-top: 15px;
+        padding: 15px;
+        border-radius: 12px;
+        background: #f8fafc;
+        color: black;
+        font-weight: 600;
+        min-height: 60px;
+      }
+
+      .log {
+        background: black;
+        color: #22c55e;
+        font-family: monospace;
+        padding: 15px;
+        height: 180px;
+        overflow-y: auto;
+        border-radius: 12px;
+        margin-top: 15px;
+      }
+
+      .home-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 14px 28px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #22c55e, #16a34a);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+        transition: 0.3s;
+      }
+
+      .home-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+      }
+
+      @media (max-width: 768px) {
+        .top-nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .nav-links {
+          justify-content: center;
+        }
+
+        button {
+          width: 100%;
+        }
+
+        h1 {
+          font-size: 1.7rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="top-nav">
+      <a href="../../project.html" class="logo">📚 WebDev Mastery</a>
+
+      <ul class="nav-links">
+        <li><a href="../../project.html">Home</a></li>
+        <li><a href="../Chapter_15/index.html">Previous</a></li>
+        <li><a href="#" class="active">Chapter 16</a></li>
+      </ul>
+    </nav>
+
+    <div class="container">
+      <h1>🛠 Chapter 16: JavaScript Error Handling</h1>
+
+      <div class="box">
+        <h2>16.1 Runtime Errors</h2>
+        <select id="errorType">
+          <option value="reference">Reference Error</option>
+          <option value="type">Type Error</option>
+          <option value="range">Range Error</option>
+        </select>
+
+        <button onclick="generateError()">Generate Error</button>
+        <button onclick="handleError()">Handle Error</button>
+
+        <div id="runtimeOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>16.2 Try Catch Validation</h2>
+        <input type="text" id="userInput" placeholder="Enter number" />
+
+        <button onclick="validateInput()">Validate</button>
+
+        <div id="tryOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>16.3 Custom Error</h2>
+        <input type="number" id="age" placeholder="Enter age" />
+
+        <button onclick="validateAge()">Validate Age</button>
+
+        <div id="ageOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>16.4 Finally Block</h2>
+
+        <button onclick="runFinally()">Run Example</button>
+
+        <div id="finallyOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>16.5 Debug Log</h2>
+
+        <button onclick="debugDemo()">Console Debug</button>
+
+        <div id="debugOutput" class="output"></div>
+
+        <div id="log" class="log"></div>
+      </div>
+
+      <div style="text-align: center">
+        <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+      </div>
+    </div>
+
+    <script>
+      function log(msg) {
+        const logBox = document.getElementById("log");
+        logBox.innerHTML += msg + "<br>";
+        logBox.scrollTop = logBox.scrollHeight;
+      }
+
+      function generateError() {
+        const type = document.getElementById("errorType").value;
+        try {
+          if (type === "reference") undefinedFunction();
+          if (type === "type") null.test;
+          if (type === "range") new Array(-1);
+        } catch (e) {
+          document.getElementById("runtimeOutput").innerText =
+            e.name + ": " + e.message;
+          log(e.name + " generated");
+        }
+      }
+
+      function handleError() {
+        try {
+          undefinedFunction();
+        } catch (e) {
+          document.getElementById("runtimeOutput").innerText =
+            "Handled: " + e.message;
+          log("Error handled");
+        }
+      }
+
+      function validateInput() {
+        const val = document.getElementById("userInput").value;
+        try {
+          if (isNaN(val) || val === "") throw new Error("Enter valid number");
+          document.getElementById("tryOutput").innerText =
+            "Valid Number: " + val;
+          log("Input validated");
+        } catch (e) {
+          document.getElementById("tryOutput").innerText = e.message;
+          log("Validation failed");
+        }
+      }
+
+      function validateAge() {
+        const age = document.getElementById("age").value;
+        try {
+          if (age < 18) throw new Error("Must be 18+");
+          if (age > 120) throw new Error("Invalid age");
+          document.getElementById("ageOutput").innerText = "Age valid";
+          log("Age valid");
+        } catch (e) {
+          document.getElementById("ageOutput").innerText = e.message;
+          log("Age error");
+        }
+      }
+
+      function runFinally() {
+        let result = "";
+        try {
+          result += "Try block running\n";
+          throw new Error("Sample error");
+        } catch (e) {
+          result += "Catch block\n";
+        } finally {
+          result += "Finally block always runs";
+        }
+        document.getElementById("finallyOutput").innerText = result;
+        log("Finally executed");
+      }
+
+      function debugDemo() {
+        console.log("Debug started");
+        console.table([{ name: "JS", type: "Debug" }]);
+        document.getElementById("debugOutput").innerText =
+          "Check browser console";
+        log("Console debug used");
+      }
+    </script>
+  </body>
+</html>

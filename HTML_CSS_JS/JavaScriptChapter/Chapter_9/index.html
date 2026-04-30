@@ -1,0 +1,325 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 9 | JavaScript Asynchronous Programming</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #fff;
+        padding: 30px;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 15% 30%,
+            rgba(79, 195, 247, 0.14),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 85% 20%,
+            rgba(129, 199, 132, 0.13),
+            transparent 25%
+          );
+        z-index: -1;
+      }
+
+      h1 {
+        text-align: center;
+        font-size: 2.2rem;
+        margin-bottom: 30px;
+        background: linear-gradient(90deg, #81c784, #4fc3f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        flex-wrap: wrap;
+        margin-bottom: 35px;
+      }
+
+      .navbar a {
+        text-decoration: none;
+        padding: 12px 24px;
+        border-radius: 12px;
+        font-weight: 700;
+        color: white;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        transition: 0.3s;
+      }
+
+      .navbar a:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.22);
+      }
+
+      .current {
+        background: linear-gradient(135deg, #f59e0b, #ea580c) !important;
+      }
+
+      .box {
+        background: rgba(15, 30, 60, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 25px;
+        margin: 25px auto;
+        max-width: 900px;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
+        transition: 0.3s;
+      }
+
+      .box:hover {
+        transform: translateY(-5px);
+        border-color: rgba(79, 195, 247, 0.35);
+      }
+
+      h2 {
+        color: #4fc3f7;
+        margin-bottom: 15px;
+      }
+
+      input {
+        width: 100%;
+        max-width: 450px;
+        padding: 12px;
+        border-radius: 10px;
+        border: 2px solid rgba(79, 195, 247, 0.25);
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-size: 16px;
+        margin-bottom: 12px;
+      }
+
+      button {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+        transition: 0.3s;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      }
+
+      .output {
+        margin-top: 12px;
+        padding: 10px;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.07);
+        color: #81c784;
+        font-weight: 700;
+        white-space: pre-wrap;
+      }
+
+      img {
+        max-width: 100%;
+        margin-top: 15px;
+        border-radius: 12px;
+      }
+
+      .log {
+        background: #020617;
+        color: #22c55e;
+        padding: 15px;
+        border-radius: 12px;
+        height: 160px;
+        overflow-y: auto;
+        font-family: monospace;
+      }
+
+      @media (max-width: 600px) {
+        body {
+          padding: 12px;
+        }
+        .navbar {
+          flex-direction: column;
+          align-items: center;
+        }
+        .navbar a {
+          width: 90%;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>Chapter 9 📘 JavaScript Asynchronous Programming</h1>
+
+    <div class="navbar">
+      <a href="../../project.html">🏠 Home</a>
+      <a href="../Chapter_8/index.html">⬅ Previous</a>
+      <a href="#" class="current">Chapter 9</a>
+      <a href="../Chapter_10/index.html">Next ➡</a>
+    </div>
+
+    <div class="box">
+      <h2>9.1 Updating the Page During a Loop</h2>
+      <input id="loopTime" type="number" value="5000" />
+      <button onclick="startProcess()">Start Processing</button>
+      <p id="status" class="output"></p>
+    </div>
+
+    <div class="box">
+      <h2>9.2 Function That Returns a Promise</h2>
+      <button onclick="runPromise()">Run Promise</button>
+      <p id="result" class="output"></p>
+    </div>
+
+    <div class="box">
+      <h2>9.3 Promisifying a Callback Function</h2>
+      <input id="factInput" type="number" value="5" />
+      <button onclick="runPromisified()">Calculate Factorial</button>
+      <p id="promisifiedoutput" class="output"></p>
+    </div>
+
+    <div class="box">
+      <h2>9.4 Executing Multiple Promises Concurrently</h2>
+      <button onclick="runPromises()">Run Promises</button>
+      <p id="output" class="output">Waiting...</p>
+    </div>
+
+    <div class="box">
+      <h2>9.5 Async / Await Example</h2>
+      <button onclick="runAsyncExample()">Load Image</button>
+      <p id="asyncResult" class="output"></p>
+      <img id="myImage" />
+    </div>
+
+    <div class="box">
+      <h2>9.6 Asynchronous Generator Function</h2>
+      <input id="target" type="number" value="25" />
+      <button onclick="runRandomSearch()">Find Number</button>
+      <p id="genOutput" class="output"></p>
+    </div>
+
+    <div class="box">
+      <h2>9.7 & 9.8 Web Worker with Progress</h2>
+      <input id="from" type="number" value="1" />
+      <input id="to" type="number" value="100" />
+      <button onclick="startPrimeSearch()">Start Prime Search</button>
+      <p id="primeContainer" class="output"></p>
+    </div>
+
+    <div class="box">
+      <h2>🧾 Event Log</h2>
+      <div id="log" class="log"></div>
+    </div>
+
+    <script>
+      function startProcess() {
+        const duration = Number(document.getElementById("loopTime").value);
+        const start = performance.now();
+        let counter = 0;
+        const status = document.getElementById("status");
+
+        function run(now) {
+          if (now - start < duration) {
+            counter++;
+            status.textContent = `Generated value: ${counter}`;
+            requestAnimationFrame(run);
+          } else {
+            status.textContent = "Processing complete";
+          }
+        }
+        requestAnimationFrame(run);
+      }
+
+      function runPromise() {
+        fetch(
+          "https://upload.wikimedia.org/wikipedia/commons/3/3f/Hubble_ultra_deep_field.jpg",
+        ).then((r) => (result.textContent = `HTTP Status: ${r.status}`));
+      }
+
+      function factorialPromise(n) {
+        return new Promise((res) => {
+          let r = 1;
+          for (let i = 1; i <= n; i++) r *= i;
+          setTimeout(() => res(r), 1000);
+        });
+      }
+
+      function runPromisified() {
+        factorialPromise(Number(factInput.value)).then(
+          (r) => (promisifiedoutput.textContent = `Result: ${r}`),
+        );
+      }
+
+      function randomWait() {
+        return new Promise((r) =>
+          setTimeout(() => r(Math.floor(Math.random() * 3000)), 1000),
+        );
+      }
+
+      function runPromises() {
+        Promise.all([randomWait(), randomWait()]).then(
+          (r) => (output.textContent = `Completed in: ${r.join(", ")} ms`),
+        );
+      }
+
+      async function runAsyncExample() {
+        const res = await fetch(
+          "https://upload.wikimedia.org/wikipedia/commons/1/1a/Proxima_Centauri_2MASS_Atlas.jpg",
+        );
+        const blob = await res.blob();
+        myImage.src = URL.createObjectURL(blob);
+      }
+
+      async function* randomNumbers(max) {
+        while (true) yield Math.floor(Math.random() * max) + 1;
+      }
+
+      async function runRandomSearch() {
+        const target = Number(document.getElementById("target").value);
+        genOutput.textContent = "";
+        for await (const n of randomNumbers(50)) {
+          genOutput.textContent += n + " ";
+          if (n === target) break;
+        }
+      }
+
+      function startPrimeSearch() {
+        const from = Number(document.getElementById("from").value);
+        const to = Number(document.getElementById("to").value);
+        let primes = [];
+
+        for (let i = from; i <= to; i++) {
+          let prime = i > 1;
+          for (let j = 2; j * j <= i; j++) {
+            if (i % j === 0) prime = false;
+          }
+          if (prime) primes.push(i);
+        }
+
+        primeContainer.textContent = primes.join(", ");
+      }
+    </script>
+  </body>
+</html>

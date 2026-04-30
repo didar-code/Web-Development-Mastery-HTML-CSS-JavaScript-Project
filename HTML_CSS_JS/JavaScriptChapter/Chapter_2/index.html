@@ -1,0 +1,603 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 2 | Strings and Regular Expressions</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        color: #ffffff;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 15% 30%,
+            rgba(79, 195, 247, 0.14),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 85% 20%,
+            rgba(129, 199, 132, 0.13),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 50% 90%,
+            rgba(155, 89, 182, 0.14),
+            transparent 25%
+          );
+        z-index: -1;
+      }
+
+      nav {
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.95),
+          rgba(39, 174, 96, 0.95)
+        );
+        padding: 0.9rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .logo {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        padding: 0.55rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        transition: 0.3s ease;
+      }
+
+      .nav-links a:hover {
+        background: rgba(255, 255, 255, 0.23);
+        transform: translateY(-2px);
+      }
+
+      .hero {
+        max-width: 1200px;
+        margin: 3rem auto 2rem;
+        padding: 0 1.4rem;
+        text-align: center;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        background: rgba(79, 195, 247, 0.14);
+        color: #81c784;
+        border: 1px solid rgba(79, 195, 247, 0.25);
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        line-height: 1.15;
+        margin-bottom: 1rem;
+        background: linear-gradient(90deg, #81c784, #4fc3f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        max-width: 850px;
+        margin: auto;
+        color: #d8e6f3;
+        font-size: 1.1rem;
+      }
+
+      .chapter-grid {
+        max-width: 1200px;
+        margin: 2.5rem auto;
+        padding: 0 1.4rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .box {
+        background: rgba(15, 30, 60, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 1.5rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
+        transition: 0.3s ease;
+      }
+
+      .box:hover {
+        transform: translateY(-6px);
+        border-color: rgba(79, 195, 247, 0.45);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.45);
+      }
+
+      .box h2 {
+        color: #4fc3f7;
+        font-size: 1.28rem;
+        margin-bottom: 0.9rem;
+        padding-bottom: 0.7rem;
+        border-bottom: 2px solid rgba(79, 195, 247, 0.22);
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        margin-top: 0.7rem;
+        border-radius: 10px;
+        border: 2px solid rgba(79, 195, 247, 0.22);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-size: 1rem;
+        outline: none;
+        transition: 0.25s ease;
+      }
+
+      textarea {
+        min-height: 95px;
+        resize: vertical;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: #b8c7d9;
+      }
+
+      input:focus,
+      textarea:focus {
+        border-color: #4fc3f7;
+        box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.16);
+      }
+
+      button,
+      .home-btn {
+        display: inline-block;
+        padding: 0.85rem 1.25rem;
+        margin-top: 1rem;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #4fc3f7, #2196f3);
+        color: white;
+        font-size: 1rem;
+        font-weight: 800;
+        cursor: pointer;
+        text-decoration: none;
+        transition: 0.3s ease;
+      }
+
+      button:hover,
+      .home-btn:hover {
+        background: linear-gradient(90deg, #2196f3, #1976d2);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 18px rgba(33, 150, 243, 0.35);
+      }
+
+      .output {
+        margin-top: 1rem;
+        padding: 0.9rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.07);
+        color: #e8f4ff;
+        font-weight: 700;
+        white-space: pre-wrap;
+        border-left: 4px solid #81c784;
+        min-height: 48px;
+      }
+
+      .found {
+        background: #ffd54f;
+        color: #1a1a2e;
+        padding: 2px 5px;
+        border-radius: 5px;
+        font-weight: 900;
+      }
+
+      .event-log {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 1.5rem;
+        max-height: 230px;
+        overflow-y: auto;
+        background: rgba(15, 30, 60, 0.9);
+        border-radius: 18px;
+        border: 1px solid rgba(129, 199, 132, 0.25);
+        color: #e8f4ff;
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.3);
+      }
+
+      .home-wrap {
+        text-align: center;
+        margin: 2rem 0 3rem;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem 1rem;
+        background: rgba(15, 30, 60, 0.92);
+        color: #cfd8dc;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+          padding: 1rem;
+        }
+
+        .nav-links {
+          justify-content: center;
+        }
+
+        .nav-links a {
+          font-size: 0.9rem;
+          padding: 0.5rem 0.75rem;
+        }
+
+        .chapter-grid {
+          grid-template-columns: 1fr;
+          padding: 0 1rem;
+        }
+
+        .box {
+          padding: 1.2rem;
+        }
+
+        button,
+        .home-btn {
+          width: 100%;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <a href="../../project.html" class="logo">
+        <span>📚</span>
+        <span>WebDev Mastery</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../../project.html">Home</a></li>
+        <li><a href="../Chapter_1/index.html">Chapter 1</a></li>
+        <li><a href="#">Chapter 2</a></li>
+        <li><a href="../Chapter_3/index.html">Next Chapter</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero">
+      <span class="hero-badge">JavaScript Chapter 2</span>
+      <h1>Strings & Regular Expressions</h1>
+      <p>
+        Practice JavaScript string methods, template literals, pattern matching,
+        text replacement, HTML escaping, and email validation with interactive
+        examples.
+      </p>
+    </section>
+
+    <main class="chapter-grid">
+      <div class="box">
+        <h2>2.1 Non-Empty String Check</h2>
+        <input id="inputString" placeholder="Type a string to check" />
+        <button onclick="checkString()">Check</button>
+        <p id="stringCheck" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>2.2 Number → String & Currency</h2>
+        <input type="number" id="numInput" placeholder="Enter number" />
+        <button onclick="convertNumber()">Convert</button>
+        <p id="numberConvert" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>2.3 Special Characters</h2>
+        <input
+          id="specialInput"
+          placeholder="Enter text with special characters"
+        />
+        <button onclick="showSpecial()">Show</button>
+        <p id="specialChars" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>2.4 Emojis</h2>
+        <input id="emojiInput" placeholder="Type a message with emoji" />
+        <button onclick="showEmoji()">Show</button>
+        <p id="emoji" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>2.5 Template Literals</h2>
+        <input id="firstName" placeholder="Enter first name" />
+        <input id="teamName" placeholder="Enter team name" />
+        <button onclick="showTemplate()">Generate</button>
+        <p id="template" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>2.6 Case-Insensitive Comparison</h2>
+        <input id="stringA" placeholder="String A" />
+        <input id="stringB" placeholder="String B" />
+        <button onclick="compareCase()">Compare</button>
+        <p id="caseCompare" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>2.7 String includes()</h2>
+        <input id="mainText" placeholder="Enter main text" />
+        <input id="searchWord" placeholder="Word to search" />
+        <button onclick="checkIncludes()">Check</button>
+        <p id="includes" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>2.8 Replace Text</h2>
+        <input id="replaceTextInput" placeholder="Enter text" />
+        <input id="replaceFrom" placeholder="Word to replace" />
+        <input id="replaceTo" placeholder="Replace with" />
+        <button onclick="replaceText()">Replace</button>
+        <p id="replaceText" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>2.9 Escaping HTML</h2>
+        <textarea id="htmlInput" placeholder="Enter HTML code"></textarea>
+        <button onclick="escapeHTML()">Escape</button>
+        <p id="escape" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>2.11 Slice & Split Text</h2>
+        <input id="sliceInput" placeholder="Enter text to slice/split" />
+        <input id="sliceStart" type="number" placeholder="Start index" />
+        <input id="sliceEnd" type="number" placeholder="End index" />
+        <input id="splitChar" placeholder="Split character" />
+        <button onclick="sliceSplitText()">Process</button>
+        <p id="sliceSplit" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>2.12 Find All Pattern Matches</h2>
+        <textarea id="incoming">Now is the time and this is the time</textarea>
+        <input id="pattern" placeholder="Enter pattern, example: time" />
+        <button onclick="searchPattern()">Search</button>
+        <p id="searchResult" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>2.15 Email Validation</h2>
+        <input id="emailInput" placeholder="Enter email" />
+        <button onclick="validateEmail()">Validate</button>
+        <p id="emailResult" class="output"></p>
+      </div>
+    </main>
+
+    <section class="event-log" id="eventLog">
+      <strong>Event Log:</strong><br />
+    </section>
+
+    <div class="home-wrap">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>
+      <p>© 2026 WebDev Mastery | JavaScript Learning Project</p>
+    </footer>
+
+    <script>
+      function logEvent(message) {
+        const log = document.getElementById("eventLog");
+        const timestamp = new Date().toLocaleTimeString();
+        log.innerHTML += `[${timestamp}] ${message}<br>`;
+        log.scrollTop = log.scrollHeight;
+      }
+
+      function checkString() {
+        const val = document.getElementById("inputString").value;
+        const result = val.trim()
+          ? "✅ Valid non-empty string"
+          : "❌ Invalid string";
+        document.getElementById("stringCheck").textContent = result;
+        logEvent(`Checked string: "${val}" → ${result}`);
+      }
+
+      function convertNumber() {
+        const num = parseFloat(document.getElementById("numInput").value);
+
+        if (isNaN(num)) {
+          alert("Enter a valid number!");
+          return;
+        }
+
+        const formatter = new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: "USD",
+        });
+
+        const result =
+          `Fixed(2): ${num.toFixed(2)}\n` +
+          `Precision(5): ${num.toPrecision(5)}\n` +
+          `Currency: ${formatter.format(num)}`;
+
+        document.getElementById("numberConvert").textContent = result;
+        logEvent(`Converted number: ${num}`);
+      }
+
+      function showSpecial() {
+        const val = document.getElementById("specialInput").value;
+        document.getElementById("specialChars").textContent =
+          val || "No input provided";
+        logEvent(`Special chars shown: "${val}"`);
+      }
+
+      function showEmoji() {
+        const val = document.getElementById("emojiInput").value;
+        document.getElementById("emoji").textContent =
+          val || "No input provided";
+        logEvent(`Emoji displayed: "${val}"`);
+      }
+
+      function showTemplate() {
+        const first = document.getElementById("firstName").value || "Didar";
+        const team = document.getElementById("teamName").value || "PSG";
+
+        const result =
+          `Player ${first} plays for ${team}.\n` +
+          `Sum of 84 + 15 = ${84 + 15}`;
+
+        document.getElementById("template").textContent = result;
+        logEvent(`Template generated: "${result}"`);
+      }
+
+      function compareCase() {
+        const a = document.getElementById("stringA").value;
+        const b = document.getElementById("stringB").value;
+
+        const result =
+          a.toLowerCase() === b.toLowerCase()
+            ? "✅ Strings match"
+            : "❌ Strings differ";
+
+        document.getElementById("caseCompare").textContent = result;
+        logEvent(`Compared: "${a}" vs "${b}" → ${result}`);
+      }
+
+      function checkIncludes() {
+        const text = document.getElementById("mainText").value;
+        const word = document.getElementById("searchWord").value;
+
+        const result = text.includes(word)
+          ? "✅ Word found"
+          : "❌ Word not found";
+
+        document.getElementById("includes").textContent = result;
+        logEvent(`Includes check: "${word}" in "${text}" → ${result}`);
+      }
+
+      function replaceText() {
+        const text = document.getElementById("replaceTextInput").value;
+        const from = document.getElementById("replaceFrom").value;
+        const to = document.getElementById("replaceTo").value;
+
+        if (!from) {
+          alert("Enter the word you want to replace.");
+          return;
+        }
+
+        const result = text.replaceAll(from, to);
+        document.getElementById("replaceText").textContent = result;
+        logEvent(`Replaced "${from}" with "${to}" in "${text}" → "${result}"`);
+      }
+
+      function escapeHTML() {
+        const html = document.getElementById("htmlInput").value;
+        const safe = html.replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+
+        document.getElementById("escape").textContent = safe;
+        logEvent(`Escaped HTML: "${html}" → "${safe}"`);
+      }
+
+      function sliceSplitText() {
+        const text = document.getElementById("sliceInput").value;
+        const start =
+          parseInt(document.getElementById("sliceStart").value) || 0;
+        const end =
+          parseInt(document.getElementById("sliceEnd").value) || text.length;
+        const splitChar = document.getElementById("splitChar").value || ",";
+
+        const sliced = text.slice(start, end);
+        const list = sliced.split(splitChar).map((s) => s.trim());
+
+        const result =
+          `Sliced Text: "${sliced}"\n` + `Split Result:\n${list.join("\n")}`;
+
+        document.getElementById("sliceSplit").textContent = result;
+        logEvent(`Slice & Split completed`);
+      }
+
+      function searchPattern() {
+        const text = document.getElementById("incoming").value;
+        const pattern = document.getElementById("pattern").value;
+
+        if (!pattern) {
+          alert("Enter a pattern first!");
+          return;
+        }
+
+        const regex = new RegExp(pattern, "gi");
+        let result = "";
+        let last = 0;
+
+        for (const match of text.matchAll(regex)) {
+          result += text.slice(last, match.index);
+          result += `<span class="found">${match[0]}</span>`;
+          last = match.index + match[0].length;
+        }
+
+        result += text.slice(last);
+
+        document.getElementById("searchResult").innerHTML =
+          result || "No matches found";
+
+        logEvent(`Searched pattern: "${pattern}"`);
+      }
+
+      function validateEmail() {
+        const email = document.getElementById("emailInput").value;
+        const regex = /\S+@\S+\.\S+/;
+
+        const result = regex.test(email)
+          ? "✅ Valid email"
+          : "❌ Invalid email";
+
+        document.getElementById("emailResult").textContent = result;
+        logEvent(`Validated email: "${email}" → ${result}`);
+      }
+    </script>
+  </body>
+</html>

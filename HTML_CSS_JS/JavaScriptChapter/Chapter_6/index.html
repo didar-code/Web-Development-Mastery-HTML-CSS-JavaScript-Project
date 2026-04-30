@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 6 | JavaScript Functions</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        color: #ffffff;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 15% 30%,
+            rgba(79, 195, 247, 0.14),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 85% 20%,
+            rgba(129, 199, 132, 0.13),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 50% 90%,
+            rgba(155, 89, 182, 0.14),
+            transparent 25%
+          );
+        z-index: -1;
+      }
+
+      nav {
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.95),
+          rgba(39, 174, 96, 0.95)
+        );
+        padding: 0.9rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .logo {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        padding: 0.55rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        transition: 0.3s ease;
+      }
+
+      .nav-links a:hover,
+      .nav-links .active {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .hero {
+        max-width: 1200px;
+        margin: 3rem auto 2rem;
+        padding: 0 1.4rem;
+        text-align: center;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        background: rgba(79, 195, 247, 0.14);
+        color: #81c784;
+        border: 1px solid rgba(79, 195, 247, 0.25);
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        line-height: 1.15;
+        margin-bottom: 1rem;
+        background: linear-gradient(90deg, #81c784, #4fc3f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        max-width: 850px;
+        margin: auto;
+        color: #d8e6f3;
+        font-size: 1.1rem;
+      }
+
+      .chapter-grid {
+        max-width: 1200px;
+        margin: 2.5rem auto;
+        padding: 0 1.4rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .box {
+        background: rgba(15, 30, 60, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 1.5rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
+        transition: 0.3s ease;
+      }
+
+      .box:hover {
+        transform: translateY(-6px);
+        border-color: rgba(79, 195, 247, 0.45);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.45);
+      }
+
+      .box h2 {
+        color: #4fc3f7;
+        font-size: 1.22rem;
+        margin-bottom: 0.9rem;
+        padding-bottom: 0.7rem;
+        border-bottom: 2px solid rgba(79, 195, 247, 0.22);
+      }
+
+      p,
+      ul {
+        font-size: 1rem;
+      }
+
+      ul {
+        padding-left: 1.2rem;
+        margin-top: 1rem;
+        color: #e8f4ff;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        margin-top: 0.7rem;
+        border-radius: 10px;
+        border: 2px solid rgba(79, 195, 247, 0.22);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-size: 1rem;
+        outline: none;
+        transition: 0.25s ease;
+      }
+
+      input::placeholder {
+        color: #b8c7d9;
+      }
+
+      input:focus {
+        border-color: #4fc3f7;
+        box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.16);
+      }
+
+      button {
+        width: auto;
+        min-width: 180px;
+        padding: 13px 24px;
+        margin-top: 12px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.35s ease;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(56, 189, 248, 0.45);
+        background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      }
+
+      .output {
+        margin-top: 1rem;
+        padding: 0.9rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.07);
+        color: #e8f4ff;
+        font-weight: 700;
+        white-space: pre-wrap;
+        border-left: 4px solid #81c784;
+        min-height: 48px;
+      }
+
+      .log {
+        background: #020617;
+        color: #22c55e;
+        padding: 15px;
+        border-radius: 12px;
+        font-family: monospace;
+        font-size: 14px;
+        max-height: 180px;
+        overflow-y: auto;
+        margin-top: 10px;
+        white-space: pre-wrap;
+      }
+
+      .home-wrap {
+        text-align: center;
+        margin: 2rem 0 3rem;
+        padding: 0 1.4rem;
+      }
+
+      .home-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 13px 28px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #334155, #475569);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+        transition: 0.35s;
+      }
+
+      .home-btn:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #1e293b, #334155);
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem 1rem;
+        background: rgba(15, 30, 60, 0.92);
+        color: #cfd8dc;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+          padding: 1rem;
+        }
+
+        .nav-links {
+          justify-content: center;
+        }
+
+        .nav-links a {
+          font-size: 0.9rem;
+          padding: 0.5rem 0.75rem;
+        }
+
+        .chapter-grid {
+          grid-template-columns: 1fr;
+          padding: 0 1rem;
+        }
+
+        .box {
+          padding: 1.2rem;
+        }
+
+        button,
+        .home-btn {
+          width: 100%;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <a href="../../project.html" class="logo">
+        <span>📚</span>
+        <span>WebDev Mastery</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../../project.html">Home</a></li>
+        <li><a href="../Chapter_5/index.html">Previous Chapter</a></li>
+        <li><a href="#" class="active">Chapter 6</a></li>
+        <li><a href="../Chapter_7/index.html">Next Chapter</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero">
+      <span class="hero-badge">JavaScript Chapter 6</span>
+      <h1>📘 JavaScript Functions</h1>
+      <p>
+        Practice callbacks, arrow functions, default parameters, rest
+        parameters, generators, recursion, partial application, and function
+        binding.
+      </p>
+    </section>
+
+    <main class="chapter-grid">
+      <div class="box">
+        <h2>6.1 Function as Argument (Callback)</h2>
+        <button onclick="runCallback()">Run Test</button>
+        <p id="callbackOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>6.2 Arrow Function (Squares)</h2>
+        <input id="arrowInput" value="[2,4,6,8,10]" />
+        <button onclick="arrowSquares()">Calculate</button>
+        <p id="arrowOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>6.3 Default Parameters</h2>
+        <input id="defaultInput" value="[15,25,35]" />
+        <button onclick="defaultParams()">Run</button>
+        <p id="defaultOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>6.4 Unlimited Arguments (Rest)</h2>
+        <input id="restInput" value="[3.5,6.1,2,8]" />
+        <button onclick="restSum()">Sum</button>
+        <p id="restOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>6.5 Named Function</h2>
+        <input id="namedInput" value="[2,4,6,8,10]" />
+        <button onclick="namedFunction()">Calculate</button>
+        <p id="namedOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>6.6 Named Parameters (Date Difference)</h2>
+        <input id="dateInput" value="2023-06-01" />
+        <input id="precisionInput" type="number" value="1" />
+        <button onclick="dateDiff()">Calculate</button>
+        <p id="dateOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>6.7 Generator Function</h2>
+        <button onclick="runGenerator()">Generate</button>
+        <ul id="generatorOutput"></ul>
+      </div>
+
+      <div class="box">
+        <h2>6.8 Reducing Redundancy (Partial Application)</h2>
+        <input id="partialInput" value="khulna" />
+        <button onclick="runPartial()">Run Examples</button>
+        <p id="partialOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>6.9 Fixing this with Function Binding</h2>
+        <input id="startCount" type="number" value="10" />
+        <input id="endCount" type="number" value="0" />
+        <button onclick="startBoundCounter()">Start Counter</button>
+        <p id="counterDiv" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>6.10 Recursive Function (Factorial)</h2>
+        <input id="factorialInput" type="number" value="6" />
+        <button onclick="factorialCalc()">Calculate</button>
+        <p id="recursiveOutput" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>🧾 Event Log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </main>
+
+    <div class="home-wrap">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>
+      <p>© 2026 WebDev Mastery | JavaScript Learning Project</p>
+    </footer>
+
+    <script>
+      function logEvent(msg) {
+        const log = document.getElementById("log");
+        log.textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+        log.scrollTop = log.scrollHeight;
+      }
+
+      function runCallback() {
+        document.getElementById("callbackOutput").textContent =
+          "⏳ Waiting 3 seconds...";
+
+        setTimeout(() => {
+          document.getElementById("callbackOutput").textContent =
+            "✅ Button clicked 3 seconds ago!";
+          logEvent("Callback executed after delay");
+        }, 3000);
+
+        logEvent("Callback started");
+      }
+
+      function arrowSquares() {
+        const nums = JSON.parse(document.getElementById("arrowInput").value);
+        const result = nums.map((n) => n ** 2);
+
+        document.getElementById("arrowOutput").textContent =
+          "Squares: " + result.join(", ");
+
+        logEvent("Arrow function used");
+      }
+
+      function addNumbers(a = 10, b = 20, c = 30) {
+        return a + b + c;
+      }
+
+      function defaultParams() {
+        const vals = JSON.parse(document.getElementById("defaultInput").value);
+
+        document.getElementById("defaultOutput").textContent =
+          `With input: ${addNumbers(...vals)} | Default: ${addNumbers()}`;
+
+        logEvent("Default parameters tested");
+      }
+
+      function sumRound(...nums) {
+        return nums.reduce((s, n) => s + n, 0);
+      }
+
+      function restSum() {
+        const nums = JSON.parse(document.getElementById("restInput").value);
+
+        document.getElementById("restOutput").textContent =
+          "Sum: " + sumRound(...nums);
+
+        logEvent("Rest parameters used");
+      }
+
+      function squareNumber(num) {
+        return num ** 2;
+      }
+
+      function namedFunction() {
+        const nums = JSON.parse(document.getElementById("namedInput").value);
+        const result = nums.map(squareNumber);
+
+        document.getElementById("namedOutput").textContent =
+          "Squares: " + result.join(", ");
+
+        logEvent("Named function executed");
+      }
+
+      function dateDifferenceInSeconds(
+        newDate,
+        oldDate,
+        { precision = 2 } = {},
+      ) {
+        return ((newDate - oldDate) / 1000).toFixed(precision);
+      }
+
+      function dateDiff() {
+        const oldDate = new Date(document.getElementById("dateInput").value);
+        const precision = Number(
+          document.getElementById("precisionInput").value,
+        );
+
+        const result = dateDifferenceInSeconds(new Date(), oldDate, {
+          precision,
+        });
+
+        document.getElementById("dateOutput").textContent =
+          "Difference in seconds: " + result;
+
+        logEvent("Date difference calculated");
+      }
+
+      function* generateValues() {
+        yield "JavaScript";
+        yield 2024;
+        yield "Functions";
+        yield 99;
+      }
+
+      function runGenerator() {
+        const ul = document.getElementById("generatorOutput");
+        ul.innerHTML = "";
+
+        for (const v of generateValues()) {
+          const li = document.createElement("li");
+          li.textContent = v;
+          ul.appendChild(li);
+        }
+
+        logEvent("Generator function executed");
+      }
+
+      function makeString(prefix, str, suffix) {
+        return prefix + str + suffix;
+      }
+
+      function quoteString(str) {
+        return makeString('"', str, '"');
+      }
+
+      function barString(str) {
+        return makeString("-", str, "-");
+      }
+
+      function namedEntity(str) {
+        return makeString("&#", str, ";");
+      }
+
+      function runPartial() {
+        const input = document.getElementById("partialInput").value;
+
+        const result =
+          `quoteString("${input}") → ${quoteString(input)}\n` +
+          `barString("${input}") → ${barString(input)}\n` +
+          `namedEntity(107) → ${namedEntity(107)}`;
+
+        document.getElementById("partialOutput").textContent = result;
+        logEvent("Executed partial application examples");
+      }
+
+      function Counter(from, to, divElement) {
+        this.currentCount = from;
+        this.finishCount = to;
+        this.element = divElement;
+
+        this.incrementCounter = function () {
+          this.currentCount -= 1;
+          this.element.textContent = this.currentCount;
+
+          if (this.currentCount > this.finishCount) {
+            setTimeout(this.incrementCounter.bind(this), 1000);
+          }
+        };
+
+        this.startCounter = function () {
+          this.element.textContent = this.currentCount;
+          this.incrementCounter();
+        };
+      }
+
+      let counter;
+
+      function startBoundCounter() {
+        const from = Number(document.getElementById("startCount").value);
+        const to = Number(document.getElementById("endCount").value);
+        const element = document.getElementById("counterDiv");
+
+        counter = new Counter(from, to, element);
+        counter.startCounter();
+
+        logEvent(`Started bound counter from ${from} to ${to}`);
+      }
+
+      function factorial(n) {
+        return n <= 1 ? 1 : n * factorial(n - 1);
+      }
+
+      function factorialCalc() {
+        const n = Number(document.getElementById("factorialInput").value);
+
+        document.getElementById("recursiveOutput").textContent =
+          `Factorial of ${n} = ${factorial(n)}`;
+
+        logEvent("Recursive factorial calculated");
+      }
+
+      logEvent("Page loaded → JavaScript ready");
+    </script>
+  </body>
+</html>

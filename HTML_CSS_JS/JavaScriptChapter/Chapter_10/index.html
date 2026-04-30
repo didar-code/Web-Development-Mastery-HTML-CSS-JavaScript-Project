@@ -1,0 +1,648 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 10 | JavaScript Error Handling</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        color: #ffffff;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 15% 30%,
+            rgba(79, 195, 247, 0.14),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 85% 20%,
+            rgba(129, 199, 132, 0.13),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 50% 90%,
+            rgba(155, 89, 182, 0.14),
+            transparent 25%
+          );
+        z-index: -1;
+      }
+
+      nav {
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.95),
+          rgba(39, 174, 96, 0.95)
+        );
+        padding: 0.9rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+      }
+
+      .logo {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.15rem;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        padding: 0.55rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        transition: 0.3s ease;
+      }
+
+      .nav-links a:hover,
+      .nav-links .active {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .hero {
+        max-width: 1200px;
+        margin: 3rem auto 2rem;
+        padding: 0 1.4rem;
+        text-align: center;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        background: rgba(79, 195, 247, 0.14);
+        color: #81c784;
+        border: 1px solid rgba(79, 195, 247, 0.25);
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        line-height: 1.15;
+        margin-bottom: 1rem;
+        background: linear-gradient(90deg, #81c784, #4fc3f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        max-width: 850px;
+        margin: auto;
+        color: #d8e6f3;
+        font-size: 1.1rem;
+      }
+
+      .chapter-grid {
+        max-width: 1200px;
+        margin: 2.5rem auto;
+        padding: 0 1.4rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .box {
+        background: rgba(15, 30, 60, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 1.5rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
+        transition: 0.3s ease;
+      }
+
+      .box:hover {
+        transform: translateY(-6px);
+        border-color: rgba(79, 195, 247, 0.45);
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.45);
+      }
+
+      .box h2 {
+        color: #4fc3f7;
+        font-size: 1.22rem;
+        margin-bottom: 0.9rem;
+        padding-bottom: 0.7rem;
+        border-bottom: 2px solid rgba(79, 195, 247, 0.22);
+      }
+
+      .box h3 {
+        margin-top: 1rem;
+        color: #81c784;
+      }
+
+      input {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        margin-top: 0.7rem;
+        border-radius: 10px;
+        border: 2px solid rgba(79, 195, 247, 0.22);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-size: 1rem;
+        outline: none;
+        transition: 0.25s ease;
+      }
+
+      input::placeholder {
+        color: #b8c7d9;
+      }
+
+      input:focus {
+        border-color: #4fc3f7;
+        box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.16);
+      }
+
+      button {
+        width: auto;
+        min-width: 180px;
+        padding: 13px 24px;
+        margin-top: 12px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.35s ease;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(56, 189, 248, 0.45);
+        background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      }
+
+      .output {
+        margin-top: 1rem;
+        padding: 0.9rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.07);
+        color: #e8f4ff;
+        font-weight: 700;
+        white-space: pre-wrap;
+        border-left: 4px solid #81c784;
+        min-height: 48px;
+      }
+
+      .error {
+        color: #ff8a80;
+        font-weight: 800;
+      }
+
+      .success {
+        color: #81c784;
+        font-weight: 800;
+      }
+
+      .log {
+        background: #020617;
+        color: #22c55e;
+        padding: 15px;
+        border-radius: 12px;
+        font-family: monospace;
+        font-size: 14px;
+        max-height: 180px;
+        overflow-y: auto;
+        margin-top: 10px;
+        white-space: pre-wrap;
+      }
+
+      .home-wrap {
+        text-align: center;
+        margin: 2rem 0 3rem;
+        padding: 0 1.4rem;
+      }
+
+      .home-btn {
+        display: inline-block;
+        margin-top: 20px;
+        padding: 13px 28px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #334155, #475569);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.25);
+        transition: 0.35s;
+      }
+
+      .home-btn:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #1e293b, #334155);
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem 1rem;
+        background: rgba(15, 30, 60, 0.92);
+        color: #cfd8dc;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+          padding: 1rem;
+        }
+
+        .nav-links {
+          justify-content: center;
+        }
+
+        .nav-links a {
+          font-size: 0.9rem;
+          padding: 0.5rem 0.75rem;
+        }
+
+        .chapter-grid {
+          grid-template-columns: 1fr;
+          padding: 0 1rem;
+        }
+
+        .box {
+          padding: 1.2rem;
+        }
+
+        button,
+        .home-btn {
+          width: 100%;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <a href="../../project.html" class="logo">
+        <span>📚</span>
+        <span>WebDev Mastery</span>
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="../../project.html">Home</a></li>
+        <li><a href="../Chapter_9/index.html">Previous Chapter</a></li>
+        <li><a href="#" class="active">Chapter 10</a></li>
+        <li><a href="../Chapter_12/index.html">Next Chapter</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero">
+      <span class="hero-badge">JavaScript Chapter 10</span>
+      <h1>📘 Errors and Testing</h1>
+      <p>
+        Practice try-catch, async error handling, custom errors, validation,
+        product lookup errors, and basic testing examples in JavaScript.
+      </p>
+    </section>
+
+    <main class="chapter-grid">
+      <div class="box">
+        <h2>10.1 Catching and Neutralizing an Error</h2>
+        <button onclick="runErrorExample()">Run Code</button>
+        <div id="result" class="output">No code run yet.</div>
+      </div>
+
+      <div class="box">
+        <h2>10.2 Catching Different Types of Errors</h2>
+        <button onclick="catchErrors()">Run Error Examples</button>
+        <div id="catchresult" class="output">No code run yet.</div>
+      </div>
+
+      <div class="box">
+        <h2>10.3 Catching Asynchronous Errors</h2>
+        <button onclick="catchAsyncErrors()">Run Async Task</button>
+        <div id="asyncresult" class="output">No code run yet.</div>
+      </div>
+
+      <div class="box">
+        <h2>10.4 Detecting Unhandled Errors</h2>
+        <button onclick="triggerErrors()">Trigger Errors</button>
+        <div id="errorOutput" class="output">No errors yet.</div>
+      </div>
+
+      <div class="box">
+        <h2>10.5 Throwing a Standard Error</h2>
+
+        <h3>Division Calculator</h3>
+        <input
+          type="number"
+          id="number"
+          value="100"
+          placeholder="Enter a number"
+        />
+        <input
+          type="number"
+          id="divisor"
+          value="5"
+          placeholder="Enter a divisor"
+        />
+        <button onclick="performDivision()">Divide</button>
+        <div id="divisorresult" class="output">No calculation yet.</div>
+
+        <h3>Age Validator</h3>
+        <input
+          type="number"
+          id="ageInput"
+          value="30"
+          placeholder="Enter your age"
+        />
+        <button onclick="checkAge()">Check Age</button>
+        <div id="ageResult" class="output">No age checked yet.</div>
+      </div>
+
+      <div class="box">
+        <h2>10.6 Throwing a Custom Error</h2>
+
+        <button onclick="triggerCustomError()">Trigger Custom Error</button>
+        <div id="customErrorOutput" class="output">No action yet.</div>
+
+        <h3>Product Lookup</h3>
+        <input
+          type="number"
+          id="productID"
+          value="1002"
+          placeholder="Enter product ID"
+        />
+        <button onclick="checkProduct()">Check Product</button>
+        <div id="productResult" class="output">No check yet.</div>
+      </div>
+
+      <div class="box">
+        <h2>10.7 Factorial Calculator – Test Multiple Values</h2>
+        <button onclick="runFactorialTests()">Run Test Values</button>
+        <div id="factorialResult" class="output">No tests run yet.</div>
+      </div>
+
+      <div class="box">
+        <h2>🧾 Event Log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </main>
+
+    <div class="home-wrap">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>
+      <p>© 2026 WebDev Mastery | JavaScript Learning Project</p>
+    </footer>
+
+    <script>
+      function logEvent(msg) {
+        const log = document.getElementById("log");
+        log.textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+        log.scrollTop = log.scrollHeight;
+      }
+
+      function runErrorExample() {
+        const result = document.getElementById("result");
+        result.innerHTML = "";
+
+        try {
+          const uri = decodeURI("http%test");
+          result.innerHTML += `<div class="success">Success! Decoded URI: ${uri}</div>`;
+        } catch (error) {
+          result.innerHTML += `<div class="error">Caught Error: ${error.message}</div>`;
+        } finally {
+          result.innerHTML += `<div>The operation is complete.</div>`;
+        }
+
+        logEvent("10.1 runErrorExample executed");
+      }
+
+      function catchErrors() {
+        const result = document.getElementById("catchresult");
+
+        try {
+          let x = "10";
+          x.toFixed(2);
+        } catch (error) {
+          if (error instanceof RangeError) {
+            result.innerHTML = `<div class="error">Range Error: value is out of range</div>`;
+          } else if (error instanceof TypeError) {
+            result.innerHTML = `<div class="error">Type Error: wrong data type used</div>`;
+          } else {
+            throw error;
+          }
+        }
+
+        logEvent("10.2 catchErrors executed");
+      }
+
+      function catchAsyncErrors() {
+        const output = document.getElementById("asyncresult");
+        output.innerText = "⏳ Running async operations...";
+
+        (async function doWork() {
+          try {
+            await fetch("https://api.github.com");
+            output.innerText += "\n✅ Fetch succeeded!";
+          } catch (error) {
+            output.innerText += `\n❌ Fetch Error: ${error}`;
+          }
+        })().then(() => {
+          output.innerText += "\nAll done.";
+        });
+
+        logEvent("10.3 catchAsyncErrors executed");
+      }
+
+      function triggerErrors() {
+        const output = document.getElementById("errorOutput");
+        output.innerHTML = "";
+
+        window.onunhandledrejection = (e) => {
+          const div = document.createElement("div");
+          div.className = "error";
+          div.innerText = `Unhandled Promise Rejection: ${e.reason}`;
+          output.appendChild(div);
+          e.preventDefault();
+        };
+
+        window.onerror = (message, url, lineNo) => {
+          const div = document.createElement("div");
+          div.className = "error";
+          div.innerText = `Unhandled Error in ${url} line ${lineNo}: ${message}`;
+          output.appendChild(div);
+          return true;
+        };
+
+        new Promise(() => {
+          throw new Error("Disaster strikes!");
+        });
+
+        const div = document.createElement("div");
+        div.className = "success";
+        div.innerText = "Error detection triggered!";
+        output.appendChild(div);
+
+        logEvent("10.4 triggerErrors executed");
+      }
+
+      function strictDivision(number, divisor) {
+        if (divisor === 0) throw new Error("Dividing by zero is not allowed");
+        return number / divisor;
+      }
+
+      function performDivision() {
+        const output = document.getElementById("divisorresult");
+        const number = parseFloat(document.getElementById("number").value);
+        const divisor = parseFloat(document.getElementById("divisor").value);
+
+        try {
+          const result = strictDivision(number, divisor);
+          output.innerHTML = `<div class="success">Result: ${result}</div>`;
+        } catch (error) {
+          output.innerHTML = `<div class="error">${error.message}</div>`;
+        }
+
+        logEvent("10.5 performDivision executed");
+      }
+
+      function setAge(age) {
+        const upper = 90;
+        const lower = 24;
+
+        if (age > upper || age < lower) {
+          throw new RangeError(`Age [${age}] out of range ${lower}-${upper}`);
+        }
+
+        return age;
+      }
+
+      function checkAge() {
+        const output = document.getElementById("ageResult");
+        const age = parseFloat(document.getElementById("ageInput").value);
+
+        try {
+          const result = setAge(age);
+          output.innerHTML = `<div class="success">Age is valid: ${result}</div>`;
+        } catch (error) {
+          output.innerHTML = `<div class="error">${error.message}</div>`;
+        }
+
+        logEvent("10.5 checkAge executed");
+      }
+
+      class CustomError extends Error {
+        constructor(message) {
+          super(message);
+          this.name = "CustomError";
+        }
+      }
+
+      function triggerCustomError() {
+        const output = document.getElementById("customErrorOutput");
+        output.innerHTML = "";
+
+        try {
+          throw new CustomError("Application-specific error occurred!");
+        } catch (error) {
+          output.innerHTML = `<div class="error">${error.message}</div>`;
+        }
+
+        logEvent("10.6 triggerCustomError executed");
+      }
+
+      class ProductNotFound extends Error {
+        constructor(id) {
+          super(`Product ${id} not found`);
+          this.name = "ProductNotFound";
+          this.id = id;
+        }
+      }
+
+      const productCatalog = [1001, 1002, 1003, 1004, 1005];
+
+      function checkProduct() {
+        const output = document.getElementById("productResult");
+        const productID = parseInt(document.getElementById("productID").value);
+
+        try {
+          if (!productCatalog.includes(productID)) {
+            throw new ProductNotFound(productID);
+          }
+
+          output.innerHTML = `<div class="success">Product ${productID} found!</div>`;
+        } catch (error) {
+          output.innerHTML = `<div class="error">${error.message}</div>`;
+        }
+
+        logEvent("10.6 checkProduct executed");
+      }
+
+      function factorialize(n) {
+        if (n < 0 || n !== Math.trunc(n)) {
+          throw new RangeError(
+            "Factorial only defined for non-negative integers",
+          );
+        }
+
+        if (n === 0 || n === 1) return 1;
+
+        let res = n;
+        while (--n > 0) res *= n;
+        return res;
+      }
+
+      function runFactorialTests() {
+        const output = document.getElementById("factorialResult");
+        output.innerHTML = "";
+
+        [5, 0, -3, 4.5, 7, 1].forEach((num) => {
+          try {
+            const r = factorialize(num);
+            output.innerHTML += `<div class="success">Factorial of ${num}: ${r}</div>`;
+          } catch (e) {
+            output.innerHTML += `<div class="error">Error for ${num}: ${e.message}</div>`;
+          }
+        });
+
+        logEvent("10.7 runFactorialTests executed");
+      }
+
+      logEvent("Page loaded → JavaScript ready");
+    </script>
+  </body>
+</html>

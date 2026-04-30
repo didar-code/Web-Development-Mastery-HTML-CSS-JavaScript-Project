@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 10 | HTML5 APIs</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-1: #101728;
+        --bg-2: #16213e;
+        --primary: #4fc3f7;
+        --secondary: #81c784;
+        --text: #eef6ff;
+        --muted: #b8c7d9;
+        --card: rgba(15, 30, 60, 0.82);
+        --card-soft: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        color: var(--text);
+        background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        line-height: 1.6;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(
+            circle at 15% 20%,
+            rgba(79, 195, 247, 0.17),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 85% 18%,
+            rgba(129, 199, 132, 0.15),
+            transparent 26%
+          );
+      }
+
+      .top-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.9rem 5%;
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.96),
+          rgba(39, 174, 96, 0.96)
+        );
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        text-decoration: none;
+        color: white;
+        font-weight: 800;
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-link,
+      .home-btn {
+        text-decoration: none;
+        color: white;
+        font-weight: 700;
+        border-radius: 999px;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.14);
+        transition: 0.25s ease;
+      }
+
+      .nav-link:hover,
+      .home-btn:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      .nav-link.active {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: #07111f;
+      }
+
+      .hero {
+        width: min(1180px, 92%);
+        margin: 3rem auto 1.5rem;
+        padding: 2.5rem;
+        border-radius: 28px;
+        background: linear-gradient(
+          135deg,
+          rgba(15, 30, 60, 0.84),
+          rgba(25, 47, 89, 0.72)
+        );
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        color: var(--muted);
+        margin-top: 1rem;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        width: min(1180px, 92%);
+        margin: auto;
+      }
+
+      .stat-card {
+        padding: 1.2rem;
+        border-radius: 18px;
+        background: var(--card-soft);
+        border: 1px solid var(--border);
+      }
+
+      .stat-card strong {
+        display: block;
+        font-size: 1.4rem;
+        color: var(--primary);
+      }
+
+      .main-grid {
+        width: min(1180px, 92%);
+        margin: 2rem auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.3rem;
+      }
+
+      .container {
+        padding: 2rem;
+        border-radius: 22px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .container.full {
+        grid-column: 1/-1;
+      }
+
+      .container h2 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+      }
+
+      input,
+      button {
+        width: 100%;
+        padding: 0.8rem;
+        margin: 0.5rem 0;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+      }
+
+      button {
+        cursor: pointer;
+        background: linear-gradient(90deg, #4fc3f7, #81c784);
+        font-weight: 700;
+      }
+
+      #dragItem {
+        padding: 12px;
+        width: fit-content;
+        border-radius: 12px;
+        background: rgba(79, 195, 247, 0.25);
+        cursor: grab;
+      }
+
+      #dropBox {
+        border: 2px dashed rgba(255, 255, 255, 0.3);
+        min-height: 100px;
+        margin-top: 15px;
+        border-radius: 12px;
+        padding: 10px;
+      }
+
+      img {
+        max-width: 180px;
+        margin-top: 10px;
+        border-radius: 12px;
+      }
+
+      .bottom-action {
+        text-align: center;
+        margin: 2rem 0 3rem;
+      }
+
+      .home-btn {
+        background: linear-gradient(90deg, #4fc3f7, #81c784);
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--muted);
+      }
+
+      @media (max-width: 900px) {
+        .stats,
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .top-nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="top-nav">
+      <a href="../../project.html" class="brand">📚 WebDev Mastery</a>
+
+      <div class="nav-actions">
+        <a href="../../project.html" class="nav-link">Home</a>
+        <a href="../Chapter_9/index.html" class="nav-link">Previous</a>
+        <a href="#" class="nav-link active">Chapter 10</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <h1>Chapter 10 📘 HTML5 APIs</h1>
+      <p>
+        HTML5 modern browser APIs with storage, drag-drop, worker and IndexedDB.
+      </p>
+    </header>
+
+    <section class="stats">
+      <div class="stat-card">
+        <strong>5</strong>
+        <span>API Modules</span>
+      </div>
+      <div class="stat-card">
+        <strong>HTML5</strong>
+        <span>Modern Browser Features</span>
+      </div>
+      <div class="stat-card">
+        <strong>JS</strong>
+        <span>Interactive Demo</span>
+      </div>
+    </section>
+
+    <main class="main-grid">
+      <section class="container">
+        <h2>10.1 Drag and Drop</h2>
+        <div id="dragItem" draggable="true" ondragstart="dragStart(event)">
+          Drag me
+        </div>
+        <div
+          id="dropBox"
+          ondragover="allowDrop(event)"
+          ondrop="dropItem(event)"
+        ></div>
+      </section>
+
+      <section class="container">
+        <h2>10.2 Geolocation</h2>
+        <button onclick="getLocation()">Get Location</button>
+        <p id="locationOutput"></p>
+      </section>
+
+      <section class="container">
+        <h2>10.3.1 localStorage</h2>
+        <input type="text" id="lsName" placeholder="Enter name" />
+        <button onclick="saveLocal()">Save</button>
+        <button onclick="readLocal()">Read</button>
+        <button onclick="clearLocal()">Clear</button>
+        <p id="lsOutput"></p>
+      </section>
+
+      <section class="container">
+        <h2>10.3.2 sessionStorage</h2>
+        <input type="text" id="ssName" placeholder="Enter name" />
+        <button onclick="saveSession()">Save</button>
+        <button onclick="readSession()">Read</button>
+        <p id="ssOutput"></p>
+      </section>
+
+      <section class="container">
+        <h2>10.4 Web Worker</h2>
+        <button onclick="startWorker()">Start</button>
+        <button onclick="stopWorker()">Stop</button>
+        <p>Count: <span id="workerResult"></span></p>
+      </section>
+
+      <section class="container">
+        <h2>10.5 IndexedDB</h2>
+        <input type="text" id="dbName" placeholder="Enter name" />
+        <input type="file" id="dbImage" />
+        <button onclick="saveIndexedDB()">Save</button>
+        <button onclick="readIndexedDB()">Read</button>
+        <div id="dbOutput"></div>
+      </section>
+    </main>
+
+    <div class="bottom-action">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>© 2026 WebDev Mastery</footer>
+
+    <script>
+      function allowDrop(e) {
+        e.preventDefault();
+      }
+      function dragStart(e) {
+        e.dataTransfer.setData("id", e.target.id);
+      }
+      function dropItem(e) {
+        e.preventDefault();
+        const id = e.dataTransfer.getData("id");
+        e.target.appendChild(document.getElementById(id));
+      }
+
+      function getLocation() {
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition((pos) => {
+            document.getElementById("locationOutput").innerHTML =
+              "Latitude: " +
+              pos.coords.latitude +
+              "<br>Longitude: " +
+              pos.coords.longitude;
+          });
+        }
+      }
+
+      function saveLocal() {
+        localStorage.setItem("user", document.getElementById("lsName").value);
+      }
+      function readLocal() {
+        document.getElementById("lsOutput").innerText =
+          localStorage.getItem("user");
+      }
+      function clearLocal() {
+        localStorage.clear();
+        document.getElementById("lsOutput").innerText = "";
+      }
+
+      function saveSession() {
+        sessionStorage.setItem("user", document.getElementById("ssName").value);
+      }
+      function readSession() {
+        document.getElementById("ssOutput").innerText =
+          sessionStorage.getItem("user");
+      }
+
+      let worker;
+      function startWorker() {
+        if (typeof Worker !== "undefined") {
+          worker = new Worker("worker.js");
+          worker.onmessage = (e) => {
+            document.getElementById("workerResult").innerText = e.data;
+          };
+        }
+      }
+      function stopWorker() {
+        if (worker) worker.terminate();
+      }
+
+      let db;
+      const request = indexedDB.open("UserDB", 1);
+
+      request.onupgradeneeded = (e) => {
+        db = e.target.result;
+        db.createObjectStore("users", { keyPath: "id", autoIncrement: true });
+      };
+
+      request.onsuccess = (e) => {
+        db = e.target.result;
+      };
+
+      function saveIndexedDB() {
+        const name = document.getElementById("dbName").value;
+        const file = document.getElementById("dbImage").files[0];
+
+        if (!name || !file) {
+          alert("Enter name and select image");
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          const tx = db.transaction("users", "readwrite");
+          tx.objectStore("users").add({
+            name: name,
+            image: reader.result,
+          });
+          alert("Data saved");
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function readIndexedDB() {
+        const tx = db.transaction("users", "readonly");
+        const store = tx.objectStore("users");
+        const req = store.getAll();
+
+        req.onsuccess = () => {
+          const output = document.getElementById("dbOutput");
+          output.innerHTML = "";
+          req.result.forEach((user) => {
+            output.innerHTML +=
+              "<h3>" + user.name + "</h3><img src='" + user.image + "'>";
+          });
+        };
+      }
+    </script>
+  </body>
+</html>

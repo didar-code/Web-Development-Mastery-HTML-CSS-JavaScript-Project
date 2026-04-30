@@ -1,0 +1,727 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Chapter 12 | Working With HTML</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        color: #ffffff;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 15% 30%,
+            rgba(79, 195, 247, 0.14),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 85% 20%,
+            rgba(129, 199, 132, 0.13),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 50% 90%,
+            rgba(155, 89, 182, 0.14),
+            transparent 25%
+          );
+        z-index: -1;
+      }
+
+      nav {
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.95),
+          rgba(39, 174, 96, 0.95)
+        );
+        padding: 0.9rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .logo {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.15rem;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a {
+        color: #fff;
+        text-decoration: none;
+        padding: 0.55rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        transition: 0.3s ease;
+      }
+
+      .nav-links a:hover,
+      .nav-links .active {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .hero {
+        max-width: 1200px;
+        margin: 3rem auto 2rem;
+        padding: 0 1.4rem;
+        text-align: center;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        background: rgba(79, 195, 247, 0.14);
+        color: #81c784;
+        border: 1px solid rgba(79, 195, 247, 0.25);
+        font-weight: 700;
+        margin-bottom: 1.2rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        background: linear-gradient(90deg, #81c784, #4fc3f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        max-width: 850px;
+        margin: 1rem auto 0;
+        color: #d8e6f3;
+        font-size: 1.1rem;
+      }
+
+      .chapter-grid {
+        max-width: 1200px;
+        margin: 2.5rem auto;
+        padding: 0 1.4rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .box {
+        background: rgba(15, 30, 60, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 1.5rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
+        transition: 0.3s ease;
+      }
+
+      .box:hover {
+        transform: translateY(-6px);
+        border-color: rgba(79, 195, 247, 0.45);
+      }
+
+      .box h2 {
+        color: #4fc3f7;
+        font-size: 1.22rem;
+        margin-bottom: 0.9rem;
+        padding-bottom: 0.7rem;
+        border-bottom: 2px solid rgba(79, 195, 247, 0.22);
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        margin-top: 0.7rem;
+        border-radius: 10px;
+        border: 2px solid rgba(79, 195, 247, 0.22);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-size: 1rem;
+        outline: none;
+      }
+
+      textarea {
+        min-height: 120px;
+        resize: vertical;
+      }
+
+      input::placeholder,
+      textarea::placeholder {
+        color: #b8c7d9;
+      }
+
+      button,
+      input[type="submit"] {
+        width: auto;
+        min-width: 180px;
+        padding: 13px 24px;
+        margin-top: 12px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.35s ease;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+      }
+
+      button:hover,
+      input[type="submit"]:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      }
+
+      .output {
+        margin-top: 1rem;
+        padding: 0.9rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.07);
+        color: #e8f4ff;
+        font-weight: 700;
+        white-space: pre-wrap;
+        border-left: 4px solid #81c784;
+        min-height: 48px;
+      }
+
+      .log {
+        background: #020617;
+        color: #22c55e;
+        padding: 15px;
+        border-radius: 12px;
+        font-family: monospace;
+        font-size: 14px;
+        max-height: 180px;
+        overflow-y: auto;
+      }
+
+      img {
+        max-width: 100%;
+        border-radius: 12px;
+        margin-top: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        color: #fff;
+      }
+
+      td {
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        padding: 0.7rem;
+      }
+
+      .popup {
+        background: #020617;
+        color: #fff;
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: 14px;
+        max-width: 220px;
+        z-index: 1000;
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+      }
+
+      .alert {
+        background: #b91c1c;
+        color: white;
+        padding: 10px;
+        margin-top: 15px;
+        border-radius: 10px;
+      }
+
+      .error-field {
+        background: rgba(255, 0, 0, 0.12);
+        border-radius: 10px;
+        padding: 8px;
+      }
+
+      .home-wrap {
+        text-align: center;
+        margin: 2rem 0 3rem;
+        padding: 0 1.4rem;
+      }
+
+      .home-btn {
+        display: inline-block;
+        padding: 13px 28px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #334155, #475569);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem 1rem;
+        background: rgba(15, 30, 60, 0.92);
+        color: #cfd8dc;
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+          padding: 1rem;
+        }
+
+        .nav-links {
+          justify-content: center;
+        }
+
+        .chapter-grid {
+          grid-template-columns: 1fr;
+          padding: 0 1rem;
+        }
+
+        button,
+        input[type="submit"],
+        .home-btn {
+          width: 100%;
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <a href="../../project.html" class="logo">📚 WebDev Mastery</a>
+      <ul class="nav-links">
+        <li><a href="../../project.html">Home</a></li>
+        <li><a href="../Chapter_11/index.html">Previous Chapter</a></li>
+        <li><a href="#" class="active">Chapter 12</a></li>
+        <li><a href="../Chapter_13/index.html">Next Chapter</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero">
+      <span class="hero-badge">JavaScript Chapter 12</span>
+      <h1>📘 Working With HTML</h1>
+      <p>
+        Practice DOM manipulation, image handling, table updates, form
+        validation, hover popups, and accessible live regions.
+      </p>
+    </section>
+
+    <main class="chapter-grid">
+      <div class="box">
+        <h2>12.1 Parent & Child Elements</h2>
+        <textarea id="divContent" rows="4">
+<p>Life is full of struggle</p>
+<p>We are born to face it.</p></textarea
+        >
+        <button onclick="updateDiv()">Update Content</button>
+        <div id="demoDiv" class="output"></div>
+        <button onclick="showParentChildren()">Show Parent & Children</button>
+        <div id="pcOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>12.5 Accessing All Images</h2>
+        <div id="imageContainer">
+          <img src="./Neymar.jpg.webp" width="300" height="200" />
+          <img src="./nature.jpg" width="300" height="200" />
+        </div>
+        <p class="output">Total images: <span id="imgCount">0</span></p>
+        <input id="imgUrl" value="sample.jpg" />
+        <button onclick="addImage()">Add Image</button>
+        <button onclick="listImages()">List Images</button>
+        <div id="imgOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>12.9 Add Paragraph at Top</h2>
+        <div id="paraBox" class="output">
+          <p>JavaScript is powerful.</p>
+          <p>It manipulates the DOM.</p>
+        </div>
+        <input id="newParaText" value="New paragraph added" />
+        <button onclick="addParagraphTop()">Add Paragraph</button>
+        <div id="paraOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>12.10 Insert Before 3rd Paragraph</h2>
+        <div id="insertBox" class="output">
+          <p>First paragraph</p>
+          <p>Second paragraph</p>
+          <p>Third paragraph</p>
+        </div>
+        <input id="insertText" value="Inserted paragraph" />
+        <button onclick="insertBeforeThird()">Insert</button>
+      </div>
+
+      <div class="box">
+        <h2>12.11 Checkbox Validation</h2>
+        <label><input type="checkbox" id="agree" /> Accept terms</label>
+        <button id="continueBtn" disabled>Continue</button>
+        <div id="checkOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>12.12 Table Total</h2>
+        <table>
+          <tbody id="clubBody">
+            <tr>
+              <td>Real Madrid</td>
+              <td><input type="number" class="points" value="120" /></td>
+            </tr>
+            <tr>
+              <td>Barcelona</td>
+              <td><input type="number" class="points" value="95" /></td>
+            </tr>
+          </tbody>
+        </table>
+        <button onclick="calcTotal()">Calculate</button>
+        <button onclick="addClub()">Add Club</button>
+        <div id="totalOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>12.13 Delete Table Rows</h2>
+        <table>
+          <tbody id="countryBody"></tbody>
+        </table>
+        <p class="output">Click a row to delete</p>
+      </div>
+
+      <div class="box">
+        <h2>12.15 Hover-Based Pop-Up Info Window</h2>
+        <img
+          src="./sample.jpg"
+          id="infoImg"
+          width="300"
+          alt="Info Image"
+          onmouseenter="showPopup(this, 'This is hover pop-up information')"
+          onmouseleave="removePopup()"
+        />
+        <p class="output">Hover over the image to see pop-up info.</p>
+      </div>
+
+      <div class="box">
+        <h2>12.16 Validating Form Data</h2>
+        <form id="example" novalidate>
+          <input type="email" id="email" required placeholder="Email" />
+          <input type="text" id="postal" placeholder="Postal Code Bangladesh" />
+          <div id="error" class="output"></div>
+          <input type="submit" value="Submit" />
+        </form>
+      </div>
+
+      <div class="box">
+        <h2>12.17 Highlighting Form Errors</h2>
+        <form id="testform" novalidate>
+          <input
+            id="firstfield"
+            name="firstfield"
+            type="text"
+            aria-required="true"
+            required
+            placeholder="First Field Required"
+          />
+          <input
+            id="secondfield"
+            name="secondfield"
+            type="text"
+            placeholder="Second Field"
+          />
+          <input
+            id="thirdfield"
+            name="thirdfield"
+            type="text"
+            placeholder="Third Field Numeric"
+          />
+          <input
+            id="fourthfield"
+            name="fourthfield"
+            type="text"
+            placeholder="Fourth Field"
+          />
+          <input type="submit" value="Send Data" />
+        </form>
+      </div>
+
+      <div class="box">
+        <h2>12.18 Accessible Automatically Updated Region</h2>
+        <button onclick="addUpdate()">Add Update</button>
+        <div
+          id="update"
+          role="log"
+          aria-live="polite"
+          aria-atomic="true"
+          aria-relevant="additions"
+          class="output"
+        ></div>
+      </div>
+
+      <div class="box">
+        <h2>🧾 Event Log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </main>
+
+    <div class="home-wrap">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>© 2026 WebDev Mastery | JavaScript Learning Project</footer>
+
+    <script>
+      function log(msg) {
+        const logBox = document.getElementById("log");
+        logBox.textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+        logBox.scrollTop = logBox.scrollHeight;
+      }
+
+      function updateDiv() {
+        demoDiv.innerHTML = divContent.value;
+        log("Updated demo div");
+      }
+
+      function showParentChildren() {
+        let txt = `Parent: ${demoDiv.parentNode.nodeName}\nChildren:\n`;
+        demoDiv.childNodes.forEach((c) => (txt += `- ${c.nodeName}\n`));
+        pcOutput.textContent = txt;
+      }
+
+      function updateCount() {
+        imgCount.textContent =
+          imageContainer.getElementsByTagName("img").length;
+      }
+
+      function addImage() {
+        const img = document.createElement("img");
+        img.src = imgUrl.value;
+        img.width = 120;
+        imageContainer.appendChild(img);
+        updateCount();
+        log("Image added");
+      }
+
+      function listImages() {
+        let txt = "";
+        [...imageContainer.getElementsByTagName("img")].forEach(
+          (i, n) => (txt += `${n + 1}. ${i.src}\n`),
+        );
+        imgOutput.textContent = txt;
+      }
+
+      function addParagraphTop() {
+        const p = document.createElement("p");
+        p.textContent = newParaText.value;
+        paraBox.insertBefore(p, paraBox.firstChild);
+        paraOutput.textContent = "Paragraph added";
+      }
+
+      function insertBeforeThird() {
+        const p = document.createElement("p");
+        p.textContent = insertText.value;
+        insertBox.insertBefore(p, insertBox.children[2]);
+      }
+
+      agree.onchange = () => {
+        continueBtn.disabled = !agree.checked;
+        checkOutput.textContent = agree.checked
+          ? "Checked ✔"
+          : "Not checked ❌";
+      };
+
+      function calcTotal() {
+        let sum = 0;
+        document.querySelectorAll(".points").forEach((i) => (sum += +i.value));
+        totalOutput.textContent = `Total: ${sum}`;
+      }
+
+      function addClub() {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td><input placeholder="Club name"></td><td><input type="number" class="points" value="0"></td>`;
+        clubBody.appendChild(tr);
+      }
+
+      const countries = ["Bangladesh", "USA", "Germany", "Japan"];
+      countries.forEach((c) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td>${c}</td>`;
+        tr.onclick = () => tr.remove();
+        countryBody.appendChild(tr);
+      });
+
+      function compPos(obj) {
+        const rect = obj.getBoundingClientRect();
+        return { left: rect.left, top: rect.top + rect.height + 10 };
+      }
+
+      function showPopup(element, message) {
+        removePopup();
+        const pos = compPos(element);
+        const popup = document.createElement("div");
+        popup.id = "popup";
+        popup.className = "popup";
+        popup.textContent = message;
+        popup.style.position = "fixed";
+        popup.style.left = pos.left + "px";
+        popup.style.top = pos.top + "px";
+        document.body.appendChild(popup);
+      }
+
+      function removePopup() {
+        const popup = document.getElementById("popup");
+        if (popup) popup.remove();
+      }
+
+      const form = document.getElementById("example");
+      const errorBox = document.getElementById("error");
+
+      function inputValidator(id, value) {
+        if (id === "email") return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+        if (id === "postal") return /^[0-9]{4}$/.test(value);
+        return false;
+      }
+
+      const inputs = form.querySelectorAll(
+        "input[type='email'], input[type='text']",
+      );
+
+      inputs.forEach((input) => {
+        input.addEventListener("input", function () {
+          const valid = inputValidator(this.id, this.value);
+          if (!valid && this.value.length > 0) {
+            this.setAttribute("aria-invalid", "true");
+          } else {
+            this.removeAttribute("aria-invalid");
+          }
+        });
+      });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+        errorBox.textContent = "";
+        let isValid = true;
+
+        inputs.forEach((input) => {
+          if (!inputValidator(input.id, input.value)) {
+            isValid = false;
+            input.setAttribute("aria-invalid", "true");
+          }
+        });
+
+        errorBox.textContent = isValid
+          ? "✅ Form submitted successfully!"
+          : "❌ Please correct the highlighted fields.";
+        if (isValid) log("Form validated successfully");
+      });
+
+      const form1 = document.getElementById("testform");
+      const firstField = document.getElementById("firstfield");
+      const thirdField = document.getElementById("thirdfield");
+
+      thirdField.addEventListener("change", validateNumericField);
+      firstField.addEventListener("blur", validateRequiredField);
+      form1.addEventListener("submit", finalCheck);
+
+      function removeAlert() {
+        const msg = document.getElementById("msg");
+        if (msg) msg.remove();
+      }
+
+      function resetField(elem) {
+        elem.parentNode.classList.remove("error-field");
+        elem.removeAttribute("aria-invalid");
+      }
+
+      function badField(elem) {
+        elem.parentNode.classList.add("error-field");
+        elem.setAttribute("aria-invalid", "true");
+      }
+
+      function generateAlert(text) {
+        const msg = document.createElement("div");
+        msg.id = "msg";
+        msg.className = "alert";
+        msg.setAttribute("role", "alert");
+        msg.textContent = text;
+        document.body.appendChild(msg);
+      }
+
+      function validateNumericField() {
+        removeAlert();
+        if (!isNaN(this.value) && this.value !== "") {
+          resetField(this);
+        } else {
+          badField(this);
+          generateAlert("❌ Third Field only accepts numeric values.");
+        }
+      }
+
+      function validateRequiredField() {
+        removeAlert();
+        if (this.value.trim().length > 0) {
+          resetField(this);
+        } else {
+          badField(this);
+          generateAlert("❌ First Field is required.");
+        }
+      }
+
+      function finalCheck(event) {
+        removeAlert();
+        const invalidFields = document.querySelectorAll(
+          "[aria-invalid='true']",
+        );
+        if (invalidFields.length > 0) {
+          generateAlert(
+            "❌ Please correct the highlighted fields before submitting.",
+          );
+          event.preventDefault();
+        }
+      }
+
+      let counter = 1;
+
+      function addUpdate() {
+        const updateLog = document.getElementById("update");
+        const entry = document.createElement("div");
+        entry.textContent = `Update message ${counter} added`;
+        counter++;
+        updateLog.appendChild(entry);
+      }
+
+      updateDiv();
+      updateCount();
+      log("Page loaded → JavaScript ready");
+    </script>
+  </body>
+</html>

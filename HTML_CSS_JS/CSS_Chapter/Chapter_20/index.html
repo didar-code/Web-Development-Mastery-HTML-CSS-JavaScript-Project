@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 20 | CSS Transitions & Animations</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-1: #101728;
+        --bg-2: #16213e;
+        --primary: #4fc3f7;
+        --secondary: #81c784;
+        --text: #eef6ff;
+        --muted: #b8c7d9;
+        --card: rgba(15, 30, 60, 0.82);
+        --card-soft: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        color: var(--text);
+        background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        line-height: 1.6;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(
+            circle at 15% 20%,
+            rgba(79, 195, 247, 0.17),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 85% 18%,
+            rgba(129, 199, 132, 0.15),
+            transparent 26%
+          );
+      }
+
+      .top-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.9rem 5%;
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.96),
+          rgba(39, 174, 96, 0.96)
+        );
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
+      }
+
+      .brand {
+        text-decoration: none;
+        color: white;
+        font-weight: 800;
+      }
+
+      .nav-actions {
+        display: flex;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-link,
+      .home-btn {
+        text-decoration: none;
+        color: white;
+        font-weight: 700;
+        border-radius: 999px;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.14);
+        transition: 0.25s ease;
+      }
+
+      .nav-link:hover,
+      .home-btn:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.24);
+      }
+
+      .nav-link.active {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: #07111f;
+      }
+
+      .hero {
+        width: min(1180px, 92%);
+        margin: 3rem auto 1.5rem;
+        padding: 2.5rem;
+        border-radius: 28px;
+        background: linear-gradient(
+          135deg,
+          rgba(15, 30, 60, 0.84),
+          rgba(25, 47, 89, 0.72)
+        );
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        color: var(--muted);
+        margin-top: 1rem;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        width: min(1180px, 92%);
+        margin: auto;
+      }
+
+      .stat-card {
+        padding: 1.2rem;
+        border-radius: 18px;
+        background: var(--card-soft);
+        border: 1px solid var(--border);
+      }
+
+      .stat-card strong {
+        display: block;
+        font-size: 1.4rem;
+        color: var(--primary);
+      }
+
+      .main-grid {
+        width: min(1180px, 92%);
+        margin: 2rem auto;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1.3rem;
+      }
+
+      .section-box {
+        padding: 2rem;
+        border-radius: 22px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+      }
+
+      .section-box.full {
+        grid-column: 1 / -1;
+      }
+
+      .section-box h2 {
+        color: var(--primary);
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid rgba(79, 195, 247, 0.22);
+      }
+
+      .section-box h3 {
+        color: var(--secondary);
+        margin: 1rem 0 0.6rem;
+      }
+
+      .example {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin: 1rem 0 1.5rem;
+      }
+
+      .box {
+        width: 120px;
+        height: 120px;
+        background: #3498db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
+      }
+
+      .animation-box {
+        width: 100px;
+        height: 100px;
+        background: #e74c3c;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 800;
+        border-radius: 16px;
+        box-shadow: 0 12px 26px rgba(0, 0, 0, 0.25);
+      }
+
+      .box-hover:hover {
+        background: #2ecc71;
+        transform: scale(1.2);
+      }
+
+      .box-delay {
+        transition: all 0.5s ease 0.3s;
+      }
+
+      .box-delay:hover {
+        background: #f1c40f;
+        color: #07111f;
+        transform: rotate(15deg);
+      }
+
+      .box-timing {
+        transition: all 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+      }
+
+      .box-timing:hover {
+        background: #9b59b6;
+        transform: translateY(-20px);
+      }
+
+      .box-shorthand {
+        transition:
+          background 0.4s ease,
+          transform 0.4s ease;
+      }
+
+      .box-shorthand:hover {
+        background: #1abc9c;
+        transform: scale(1.1) rotate(-10deg);
+      }
+
+      @keyframes moveRight {
+        0% {
+          transform: translateX(0);
+          background: #e74c3c;
+        }
+
+        100% {
+          transform: translateX(100px);
+          background: #3498db;
+        }
+      }
+
+      @keyframes multiStep {
+        0% {
+          background: #e74c3c;
+          transform: rotate(0deg);
+        }
+
+        25% {
+          background: #f1c40f;
+          color: #07111f;
+          transform: rotate(90deg);
+        }
+
+        50% {
+          background: #2ecc71;
+          transform: rotate(180deg);
+        }
+
+        75% {
+          background: #3498db;
+          transform: rotate(270deg);
+        }
+
+        100% {
+          background: #e74c3c;
+          transform: rotate(360deg);
+        }
+      }
+
+      .animation-step {
+        animation: moveRight 1s linear infinite alternate;
+      }
+
+      .animation-multi {
+        animation: multiStep 4s linear infinite;
+      }
+
+      .animation-delay {
+        animation: moveRight 1s linear 0.5s infinite alternate;
+      }
+
+      .animation-timing {
+        animation: moveRight 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite
+          alternate;
+      }
+
+      .animation-shorthand {
+        animation: multiStep 3s ease-in-out 0.5s infinite alternate-reverse;
+      }
+
+      .bottom-action {
+        text-align: center;
+        margin: 2rem 0 3rem;
+      }
+
+      .home-btn {
+        display: inline-block;
+        background: linear-gradient(90deg, #4fc3f7, #81c784);
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.5rem;
+        color: var(--muted);
+      }
+
+      @media (max-width: 900px) {
+        .stats,
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .top-nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .nav-actions {
+          justify-content: center;
+        }
+
+        .hero,
+        .section-box {
+          padding: 1.4rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .box {
+          width: 90px;
+          height: 90px;
+          font-size: 0.85rem;
+        }
+
+        .animation-box {
+          width: 80px;
+          height: 80px;
+          font-size: 0.75rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="top-nav">
+      <a href="../../project.html" class="brand">📚 WebDev Mastery</a>
+
+      <div class="nav-actions">
+        <a href="../../project.html" class="nav-link">Home</a>
+        <a href="../Chapter_19/index.html" class="nav-link">Previous</a>
+        <a href="#" class="nav-link active">Chapter 20</a>
+        <a href="../Chapter_21/index.html" class="nav-link">Next</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <h1>📘 Chapter 20: CSS Transitions & Animations</h1>
+      <p>
+        CSS transitions, transition delay, timing functions, keyframes,
+        animation direction, and shorthand animation property.
+      </p>
+    </header>
+
+    <section class="stats">
+      <div class="stat-card">
+        <strong>02</strong>
+        <span>Main Topics</span>
+      </div>
+      <div class="stat-card">
+        <strong>11</strong>
+        <span>Practical Examples</span>
+      </div>
+      <div class="stat-card">
+        <strong>100%</strong>
+        <span>Responsive Layout</span>
+      </div>
+    </section>
+
+    <main class="main-grid">
+      <section class="section-box">
+        <h2>20.1 CSS Transitions</h2>
+
+        <h3>20.1.1 Basic Transitions</h3>
+        <div class="example">
+          <div class="box box-hover">Hover</div>
+        </div>
+
+        <h3>20.1.2 Transition Delay</h3>
+        <div class="example">
+          <div class="box box-delay">Delay</div>
+        </div>
+
+        <h3>20.1.3 Transition Timing Function</h3>
+        <div class="example">
+          <div class="box box-timing">Timing</div>
+        </div>
+
+        <h3>20.1.4 Shorthand Transition Property</h3>
+        <div class="example">
+          <div class="box box-shorthand">Shorthand</div>
+        </div>
+      </section>
+
+      <section class="section-box">
+        <h2>20.2 CSS Animations</h2>
+
+        <h3>20.2.1 Two-step Keyframes</h3>
+        <div class="example">
+          <div class="animation-box animation-step">Step</div>
+        </div>
+
+        <h3>20.2.2 Multiple Keyframes</h3>
+        <div class="example">
+          <div class="animation-box animation-multi">Multi</div>
+        </div>
+
+        <h3>20.2.3 Animation Delay</h3>
+        <div class="example">
+          <div class="animation-box animation-delay">Delay</div>
+        </div>
+
+        <h3>20.2.4 Animation Iteration Count</h3>
+        <div class="example">
+          <div
+            class="animation-box"
+            style="animation: moveRight 1s linear 3 forwards"
+          >
+            3 Times
+          </div>
+        </div>
+
+        <h3>20.2.5 Animation Direction</h3>
+        <div class="example">
+          <div
+            class="animation-box"
+            style="animation: moveRight 1s linear infinite alternate-reverse"
+          >
+            Bounce
+          </div>
+        </div>
+
+        <h3>20.2.6 Animation Timing Function</h3>
+        <div class="example">
+          <div class="animation-box animation-timing">Bezier</div>
+        </div>
+
+        <h3>20.2.7 Shorthand Animation Property</h3>
+        <div class="example">
+          <div class="animation-box animation-shorthand">Shorthand</div>
+        </div>
+      </section>
+    </main>
+
+    <div class="bottom-action">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>© 2026 WebDev Mastery</footer>
+  </body>
+</html>

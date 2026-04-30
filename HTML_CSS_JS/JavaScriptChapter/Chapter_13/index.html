@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 13 | Fetching Remote Data</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        color: #fff;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 15% 30%,
+            rgba(79, 195, 247, 0.14),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 85% 20%,
+            rgba(129, 199, 132, 0.13),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 50% 90%,
+            rgba(155, 89, 182, 0.14),
+            transparent 25%
+          );
+        z-index: -1;
+      }
+
+      nav {
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.95),
+          rgba(39, 174, 96, 0.95)
+        );
+        padding: 0.9rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+      }
+
+      .logo {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 800;
+        font-size: 1.15rem;
+      }
+
+      .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.55rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        transition: 0.3s ease;
+      }
+
+      .nav-links a:hover,
+      .nav-links .active {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .hero {
+        max-width: 1200px;
+        margin: 3rem auto 2rem;
+        padding: 0 1.4rem;
+        text-align: center;
+      }
+
+      .hero-badge {
+        display: inline-block;
+        padding: 0.55rem 1rem;
+        border-radius: 999px;
+        background: rgba(79, 195, 247, 0.14);
+        color: #81c784;
+        border: 1px solid rgba(79, 195, 247, 0.25);
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        background: linear-gradient(90deg, #81c784, #4fc3f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        max-width: 800px;
+        margin: 1rem auto 0;
+        color: #d8e6f3;
+      }
+
+      .chapter-grid {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1.4rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .box {
+        background: rgba(15, 30, 60, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 1.5rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(10px);
+        transition: 0.3s ease;
+      }
+
+      .box:hover {
+        transform: translateY(-6px);
+        border-color: rgba(79, 195, 247, 0.45);
+      }
+
+      .box h2 {
+        color: #4fc3f7;
+        font-size: 1.15rem;
+        margin-bottom: 1rem;
+        padding-bottom: 0.7rem;
+        border-bottom: 2px solid rgba(79, 195, 247, 0.22);
+      }
+
+      button {
+        padding: 13px 24px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: white;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: 0.35s ease;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 0.9rem 1rem;
+        margin-top: 0.7rem;
+        border-radius: 10px;
+        border: 2px solid rgba(79, 195, 247, 0.22);
+        background: rgba(255, 255, 255, 0.08);
+        color: #fff;
+        font-size: 1rem;
+        outline: none;
+      }
+
+      textarea {
+        min-height: 100px;
+      }
+
+      .output {
+        margin-top: 1rem;
+        padding: 0.9rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.07);
+        color: #e8f4ff;
+        font-weight: 700;
+        white-space: pre-wrap;
+        border-left: 4px solid #81c784;
+        min-height: 50px;
+      }
+
+      .log {
+        background: #020617;
+        color: #22c55e;
+        padding: 15px;
+        border-radius: 12px;
+        font-family: monospace;
+        max-height: 180px;
+        overflow-y: auto;
+      }
+
+      img {
+        max-width: 100%;
+        border-radius: 12px;
+        margin-top: 12px;
+      }
+
+      .home-wrap {
+        text-align: center;
+        margin: 2rem 0 3rem;
+      }
+
+      .home-btn {
+        display: inline-block;
+        padding: 13px 28px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #334155, #475569);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(15, 30, 60, 0.92);
+        color: #cfd8dc;
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+
+        .nav-links {
+          justify-content: center;
+        }
+
+        .chapter-grid {
+          grid-template-columns: 1fr;
+        }
+
+        button,
+        .home-btn {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <a href="../../project.html" class="logo">📚 WebDev Mastery</a>
+      <ul class="nav-links">
+        <li><a href="../../project.html">Home</a></li>
+        <li><a href="../Chapter_12/index.html">Previous Chapter</a></li>
+        <li><a href="#" class="active">Chapter 13</a></li>
+        <li><a href="../Chapter_14/index.html">Next Chapter</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero">
+      <span class="hero-badge">JavaScript Chapter 13</span>
+      <h1>📡 Fetching Remote Data</h1>
+      <p>
+        Practice fetch API, form submission, RSS parsing, image loading,
+        cookies, WebSockets and long polling in one premium interactive chapter.
+      </p>
+    </section>
+
+    <main class="chapter-grid">
+      <div class="box">
+        <h2>13.1 Requesting Remote Data with Fetch</h2>
+        <button onclick="fetchRequest()">Fetch NASA Data</button>
+        <div id="fetchOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>13.2 Form Submission</h2>
+        <form id="xhr-form">
+          <input type="text" name="name" placeholder="Your Name" />
+          <input type="email" name="email" placeholder="Email" />
+          <textarea name="message" placeholder="Message"></textarea>
+          <button type="submit">Submit</button>
+        </form>
+        <div id="xhrOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>13.4 Populating a Selection List</h2>
+        <select id="nice-thing">
+          <option value="">Choose Sport</option>
+          <option value="football">Football</option>
+          <option value="cricket">Cricket</option>
+          <option value="hockey">Hockey</option>
+          <option value="swimming">Swimming</option>
+        </select>
+        <select id="nicestuff" style="display: none; margin-top: 12px">
+          <option value="">Choose Option</option>
+        </select>
+      </div>
+
+      <div class="box">
+        <h2>13.5 Parsing Returned XML</h2>
+        <button onclick="fetchAndParse()">Fetch RSS</button>
+        <div id="parseOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>13.7 Loading an Image</h2>
+        <button onclick="fetchImage()">Load Image</button>
+        <img id="result" alt="Loaded Image" />
+      </div>
+
+      <div class="box">
+        <h2>13.8 Fetch With Cookies</h2>
+        <button onclick="fetchWithCookies()">Fetch Data</button>
+        <div id="cookieOutput" class="output"></div>
+      </div>
+
+      <div class="box">
+        <h2>13.9 WebSockets</h2>
+        <div
+          id="wsOutput"
+          class="output"
+          style="height: 150px; overflow-y: auto"
+        ></div>
+        <button onclick="connectWebSocket()">Connect</button>
+      </div>
+
+      <div class="box">
+        <h2>13.10 Long Polling</h2>
+        <div
+          id="longPollOutput"
+          class="output"
+          style="height: 150px; overflow-y: auto"
+        ></div>
+        <button onclick="startLongPolling()">Start</button>
+        <button onclick="stopLongPolling()">Stop</button>
+      </div>
+
+      <div class="box">
+        <h2>🧾 Event Log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </main>
+
+    <div class="home-wrap">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>© 2026 WebDev Mastery | Remote Data Chapter</footer>
+
+    <script>
+      function logEvent(message) {
+        const log = document.getElementById("log");
+        log.textContent += `[${new Date().toLocaleTimeString()}] ${message}\n`;
+        log.scrollTop = log.scrollHeight;
+      }
+
+      const fetchUrl = "https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY";
+
+      async function fetchRequest() {
+        const output = document.getElementById("fetchOutput");
+        output.textContent = "⏳ Fetching data...";
+        try {
+          const response = await fetch(fetchUrl);
+          const data = await response.json();
+          output.textContent = `Title: ${data.title}\nDate: ${data.date}\n\n${data.explanation}`;
+          logEvent("NASA data loaded");
+        } catch {
+          output.textContent = "❌ Error fetching data";
+        }
+      }
+
+      document
+        .getElementById("xhr-form")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const formData = new FormData(this);
+          let display = "";
+          for (let [key, value] of formData.entries()) {
+            display += `${key}: ${value}\n`;
+          }
+          xhrOutput.textContent = display;
+          logEvent("Form submitted");
+        });
+
+      const niceThings = document.getElementById("nice-thing");
+      const select = document.getElementById("nicestuff");
+
+      niceThings.addEventListener("change", () => {
+        const options = {
+          football: ["Premier League", "La Liga", "Serie A"],
+          cricket: ["IPL", "BBL", "CPL"],
+          hockey: ["FIH League", "Olympics"],
+          swimming: ["Freestyle", "Butterfly"],
+        };
+
+        select.length = 0;
+        select.options[0] = new Option("Choose Option", "");
+        const items = options[niceThings.value] || [];
+
+        items.forEach((item) => {
+          select.options[select.length] = new Option(item, item);
+        });
+
+        select.style.display = items.length ? "block" : "none";
+      });
+
+      async function fetchAndParse() {
+        parseOutput.textContent = "⏳ Fetching RSS...";
+        setTimeout(() => {
+          parseOutput.textContent = "• RSS Title Example\n• Another RSS News";
+          logEvent("RSS parsed");
+        }, 1200);
+      }
+
+      async function fetchImage() {
+        result.src =
+          "https://upload.wikimedia.org/wikipedia/commons/3/3f/NASA_logo.svg";
+        logEvent("Image loaded");
+      }
+
+      async function fetchWithCookies() {
+        cookieOutput.textContent = "✅ Simulated response received";
+        logEvent("Cookies fetch simulated");
+      }
+
+      let socketInterval;
+
+      function connectWebSocket() {
+        wsOutput.innerHTML = "";
+        let counter = 0;
+
+        socketInterval = setInterval(() => {
+          counter++;
+          wsOutput.innerHTML += `<p>Message ${counter}</p>`;
+          wsOutput.scrollTop = wsOutput.scrollHeight;
+
+          if (counter >= 5) clearInterval(socketInterval);
+        }, 1000);
+      }
+
+      let polling = false;
+
+      function longPoll() {
+        if (!polling) return;
+
+        longPollOutput.innerHTML += `<p>Server message at ${new Date().toLocaleTimeString()}</p>`;
+        longPollOutput.scrollTop = longPollOutput.scrollHeight;
+
+        setTimeout(longPoll, 2000);
+      }
+
+      function startLongPolling() {
+        polling = true;
+        longPollOutput.innerHTML = "";
+        longPoll();
+      }
+
+      function stopLongPolling() {
+        polling = false;
+      }
+
+      logEvent("Chapter 13 ready");
+    </script>
+  </body>
+</html>

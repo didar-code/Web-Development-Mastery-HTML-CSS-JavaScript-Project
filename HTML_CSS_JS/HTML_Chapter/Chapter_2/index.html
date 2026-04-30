@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 2 | HTML Elements</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      :root {
+        --bg-1: #101728;
+        --bg-2: #16213e;
+        --primary: #4fc3f7;
+        --secondary: #81c784;
+        --text: #eef6ff;
+        --muted: #b8c7d9;
+        --card: rgba(15, 30, 60, 0.82);
+        --card-soft: rgba(255, 255, 255, 0.07);
+        --border: rgba(255, 255, 255, 0.14);
+        --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        min-height: 100vh;
+        color: var(--text);
+        background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        z-index: -1;
+        background:
+          radial-gradient(
+            circle at 15% 20%,
+            rgba(79, 195, 247, 0.17),
+            transparent 28%
+          ),
+          radial-gradient(
+            circle at 85% 18%,
+            rgba(129, 199, 132, 0.15),
+            transparent 26%
+          ),
+          radial-gradient(
+            circle at 50% 90%,
+            rgba(255, 183, 77, 0.11),
+            transparent 30%
+          );
+      }
+
+      .top-nav {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding: 0.85rem 5%;
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.96),
+          rgba(39, 174, 96, 0.96)
+        );
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 8px 28px rgba(0, 0, 0, 0.32);
+        backdrop-filter: blur(12px);
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 0.7rem;
+        text-decoration: none;
+        color: white;
+        font-size: 1.08rem;
+        font-weight: 800;
+      }
+
+      .brand span:first-child {
+        width: 38px;
+        height: 38px;
+        display: grid;
+        place-items: center;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.18);
+      }
+
+      .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 0.65rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-link,
+      .home-btn {
+        text-decoration: none;
+        color: white;
+        font-weight: 700;
+        border-radius: 999px;
+        padding: 0.78rem 1.08rem;
+        background: rgba(255, 255, 255, 0.14);
+        transition: 0.25s ease;
+      }
+
+      .nav-link:hover,
+      .home-btn:hover {
+        transform: translateY(-2px);
+        background: rgba(255, 255, 255, 0.23);
+      }
+
+      .nav-link.active {
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: #07111f;
+      }
+
+      .hero {
+        width: min(1180px, 92%);
+        margin: 3rem auto 1.5rem;
+        padding: clamp(1.5rem, 4vw, 3rem);
+        border-radius: 28px;
+        background: linear-gradient(
+          135deg,
+          rgba(15, 30, 60, 0.84),
+          rgba(25, 47, 89, 0.72)
+        );
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .hero::after {
+        content: "HTML";
+        position: absolute;
+        right: clamp(1rem, 5vw, 4rem);
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: clamp(4rem, 15vw, 10rem);
+        font-weight: 900;
+        color: rgba(255, 255, 255, 0.045);
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+        background: rgba(79, 195, 247, 0.14);
+        border: 1px solid rgba(79, 195, 247, 0.28);
+        color: #c7efff;
+        font-weight: 700;
+        margin-bottom: 1rem;
+      }
+
+      .hero h1 {
+        max-width: 760px;
+        font-size: clamp(2rem, 5vw, 4rem);
+        line-height: 1.1;
+        margin-bottom: 1rem;
+        background: linear-gradient(90deg, var(--secondary), var(--primary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .hero p {
+        max-width: 720px;
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.18rem);
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 1rem;
+        width: min(1180px, 92%);
+        margin: 0 auto 1.4rem;
+      }
+
+      .stat-card {
+        padding: 1.2rem;
+        border-radius: 18px;
+        background: var(--card-soft);
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.22);
+      }
+
+      .stat-card strong {
+        display: block;
+        font-size: 1.45rem;
+        color: var(--primary);
+      }
+
+      .stat-card span {
+        color: var(--muted);
+      }
+
+      .main-grid {
+        width: min(1180px, 92%);
+        margin: 2rem auto;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 1.35rem;
+      }
+
+      .container {
+        padding: clamp(1.2rem, 3vw, 2rem);
+        border-radius: 22px;
+        background: var(--card);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+        transition: 0.25s ease;
+      }
+
+      .container:hover {
+        transform: translateY(-5px);
+        border-color: rgba(79, 195, 247, 0.35);
+      }
+
+      .container.full {
+        grid-column: 1 / -1;
+      }
+
+      .container h1 {
+        color: var(--primary);
+        font-size: clamp(1.35rem, 3vw, 2rem);
+        margin-bottom: 1rem;
+        padding-bottom: 0.8rem;
+        border-bottom: 1px solid rgba(79, 195, 247, 0.22);
+      }
+
+      .container h2 {
+        color: #7dd3fc;
+        margin-top: 0.8rem;
+        margin-bottom: 0.6rem;
+      }
+
+      p,
+      li,
+      dt,
+      dd {
+        color: var(--muted);
+        font-size: clamp(1rem, 2vw, 1.08rem);
+        line-height: 1.8;
+      }
+
+      a {
+        color: var(--primary);
+        text-decoration: none;
+        font-weight: 800;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      img {
+        max-width: 100%;
+        border-radius: 18px;
+        margin: 1rem 0;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      ul,
+      ol,
+      dl {
+        margin: 1rem 0 0 1.3rem;
+      }
+
+      dt {
+        color: var(--primary);
+        font-weight: 800;
+        margin-top: 0.8rem;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 1rem;
+        background: white;
+        color: #111827;
+        border-radius: 14px;
+        overflow: hidden;
+      }
+
+      caption {
+        color: var(--muted);
+        font-weight: 800;
+        margin-bottom: 0.7rem;
+      }
+
+      th,
+      td {
+        border: 1px solid #cbd5e1;
+        padding: 10px;
+        text-align: center;
+      }
+
+      thead {
+        background: var(--primary);
+        color: white;
+      }
+
+      tbody td:nth-child(6),
+      tbody td:nth-child(7),
+      thead th:nth-child(6),
+      thead th:nth-child(7) {
+        background: #bfdbfe;
+      }
+
+      progress,
+      meter {
+        width: 100%;
+        height: 25px;
+        margin-top: 1rem;
+      }
+
+      .output {
+        color: var(--secondary);
+        font-weight: 800;
+        margin-top: 0.7rem;
+      }
+
+      iframe {
+        width: 100%;
+        min-height: 500px;
+        border: none;
+        border-radius: 18px;
+        margin-top: 1rem;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+      }
+
+      code,
+      pre {
+        display: block;
+        text-align: left;
+        background: #0f172a;
+        color: #22c55e;
+        padding: 1.2rem;
+        border-radius: 16px;
+        overflow-x: auto;
+        font-family: Consolas, monospace;
+        font-size: 16px;
+        margin-top: 1rem;
+        border: 1px solid rgba(34, 197, 94, 0.22);
+      }
+
+      .bottom-action {
+        width: min(1180px, 92%);
+        margin: 1rem auto 3rem;
+        display: flex;
+        justify-content: center;
+      }
+
+      .home-btn {
+        background: linear-gradient(90deg, #4fc3f7, #81c784);
+        box-shadow: 0 12px 30px rgba(79, 195, 247, 0.24);
+      }
+
+      footer {
+        text-align: center;
+        padding: 1.7rem 5%;
+        color: var(--muted);
+        background: rgba(9, 18, 35, 0.65);
+        border-top: 1px solid var(--border);
+      }
+
+      @media (max-width: 900px) {
+        .top-nav {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+        .nav-actions {
+          width: 100%;
+        }
+        .nav-link {
+          flex: 1;
+          text-align: center;
+        }
+        .stats,
+        .main-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 520px) {
+        .hero,
+        .container,
+        .stat-card {
+          border-radius: 18px;
+        }
+        .nav-actions {
+          flex-direction: column;
+        }
+        .nav-link,
+        .home-btn {
+          width: 100%;
+          text-align: center;
+        }
+        table {
+          font-size: 0.8rem;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="top-nav">
+      <a href="../../project.html" class="brand">
+        <span>📚</span>
+        <span>WebDev Mastery</span>
+      </a>
+
+      <div class="nav-actions">
+        <a href="../../project.html" class="nav-link">Home</a>
+        <a href="../Chapter_1/index.html" class="nav-link">Previous</a>
+        <a href="#" class="nav-link active">Chapter 2</a>
+        <a href="../Chapter_3/index.html" class="nav-link">Next</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <span class="badge">📘 Chapter 2 • HTML Elements</span>
+      <h1>HTML Elements</h1>
+      <p>
+        This chapter covers headings, paragraphs, anchors, images, image maps,
+        lists, tables, line breaks, progress bars, meter tags, iframe, code, and
+        preformatted text.
+      </p>
+    </header>
+
+    <section class="stats">
+      <article class="stat-card">
+        <strong>15+</strong>
+        <span>HTML Topics</span>
+      </article>
+      <article class="stat-card">
+        <strong>100%</strong>
+        <span>Responsive Design</span>
+      </article>
+      <article class="stat-card">
+        <strong>HTML</strong>
+        <span>Elements Practice</span>
+      </article>
+    </section>
+
+    <main class="main-grid">
+      <section class="container">
+        <h1>.1 😊 Headings</h1>
+        <h1>Heading 1: First, solve the problem. Then, write the code.</h1>
+        <h2>Heading 2: First, solve the problem. Then, write the code.</h2>
+        <h3>Heading 3: First, solve the problem. Then, write the code.</h3>
+        <h4>Heading 4: First, solve the problem. Then, write the code.</h4>
+        <h5>Heading 5: First, solve the problem. Then, write the code.</h5>
+        <h6>Heading 6: First, solve the problem. Then, write the code.</h6>
+      </section>
+
+      <section class="container">
+        <h1>.2 💬 Paragraph</h1>
+        <h2>Heading 1</h2>
+        <p>This is your first paragraph.</p>
+      </section>
+
+      <section class="container">
+        <h1>.3.1 🌐 External Anchors</h1>
+        <p>Click the link below to visit my LinkedIn Profile:</p>
+        <a
+          href="https://www.linkedin.com/in/md-didarul-alam-chowdhury-42a2a33a4"
+          target="_blank"
+        >
+          Visit My LinkedIn Profile
+        </a>
+      </section>
+
+      <section class="container full">
+        <h1>.3.2 🔗 Internal Anchors</h1>
+        <h2 id="top">Home Page</h2>
+        <a href="#cricketer">Go to My Favourite Cricketer</a>
+
+        <h2 id="footballer">My Favourite Footballer</h2>
+        <img src="./Resources/Neymar.jpg.webp" alt="Footballer" height="300" />
+
+        <h2 id="cricketer">My Favourite Cricketer</h2>
+        <img src="./Resources/cricketer.webp" alt="Cricketer" height="300" />
+
+        <br />
+        <a href="#footballer">Go to My Favourite Footballer</a><br />
+        <a href="#top">Back to the top</a>
+      </section>
+
+      <section class="container">
+        <h1>.3.3 ⬇️ Download Links</h1>
+        <p>Click below to download an image:</p>
+        <a href="./Resources/Mountain.jpg" download="new-name.jpg"
+          >Download Image</a
+        >
+      </section>
+
+      <section class="container full">
+        <h1>.4.1 🗺️ Image Maps</h1>
+        <p>Click on different parts of the image below:</p>
+
+        <img
+          src="./Resources/NavImg.jpg"
+          alt="Navigation Bar"
+          usemap="#nav-bar"
+          width="200"
+          height="100"
+        />
+
+        <map name="nav-bar">
+          <area
+            shape="rect"
+            coords="10,10,90,50"
+            alt="Laptop"
+            href="#sunflower"
+          />
+          <area
+            shape="circle"
+            coords="150,50,25"
+            alt="Cup of Coffee"
+            href="#mountain"
+          />
+        </map>
+
+        <h2 id="sunflower">Beautiful Sunflower</h2>
+        <img
+          src="./Resources/sunflower.jpg"
+          alt="Sunflower"
+          height="300"
+          width="300"
+        />
+
+        <h2 id="mountain">Scenic Mountain</h2>
+        <img
+          src="./Resources/Mountain.jpg"
+          alt="Mountain"
+          height="300"
+          width="300"
+        />
+      </section>
+
+      <section class="container">
+        <h1>.5.1 📋 Unordered List</h1>
+        <ul>
+          <li>Item 1: Learn HTML</li>
+          <li>Item 2: Practice CSS</li>
+          <li>Item 3: Explore JavaScript</li>
+        </ul>
+      </section>
+
+      <section class="container">
+        <h1>.5.2 🔢 Ordered List</h1>
+        <ol>
+          <li>Item 1: Learn HTML</li>
+          <li>Item 2: Practice CSS</li>
+          <li>Item 3: Explore JavaScript</li>
+        </ol>
+      </section>
+
+      <section class="container">
+        <h1>.5.3 📝 Description List</h1>
+        <dl>
+          <dt>Python</dt>
+          <dd>
+            A versatile programming language great for beginners and
+            professionals.
+          </dd>
+          <dt>SQL</dt>
+          <dd>Used to manage and query relational databases efficiently.</dd>
+          <dt>React</dt>
+          <dd>
+            A JavaScript library for building interactive user interfaces.
+          </dd>
+          <dt>Git</dt>
+          <dd>
+            A version control system to track changes in your code projects.
+          </dd>
+        </dl>
+      </section>
+
+      <section class="container full">
+        <h1>.6 📅 Tables</h1>
+        <p>Calendar for January 2026:</p>
+
+        <table>
+          <caption>
+            January 2026
+          </caption>
+          <thead>
+            <tr>
+              <th>Mon</th>
+              <th>Tue</th>
+              <th>Wed</th>
+              <th>Thu</th>
+              <th>Fri</th>
+              <th>Sat</th>
+              <th>Sun</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>1</td>
+              <td>2</td>
+              <td>3</td>
+              <td>4</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td>6</td>
+              <td>7</td>
+              <td>8</td>
+              <td>9</td>
+              <td>10</td>
+              <td>11</td>
+            </tr>
+            <tr>
+              <td>12</td>
+              <td>13</td>
+              <td>14</td>
+              <td>15</td>
+              <td>16</td>
+              <td>17</td>
+              <td>18</td>
+            </tr>
+            <tr>
+              <td>19</td>
+              <td>20</td>
+              <td>21</td>
+              <td>22</td>
+              <td>23</td>
+              <td>24</td>
+              <td>25</td>
+            </tr>
+            <tr>
+              <td>26</td>
+              <td>27</td>
+              <td>28</td>
+              <td>29</td>
+              <td>30</td>
+              <td>31</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="container">
+        <h1>.7.1 ↵ Line Breaking</h1>
+        <p>
+          I've added a line break here.<br />This sentence will appear on the
+          second line.
+        </p>
+      </section>
+
+      <section class="container">
+        <h1>.8 📊 Progress Bars</h1>
+        <p>Uploading:</p>
+        <progress value="60" max="100"></progress>
+        <p class="output">60%</p>
+      </section>
+
+      <section class="container">
+        <h1>.8.2 📈 Meter Tag Example</h1>
+        <p>Disk usage:</p>
+        <meter value="60" max="128"></meter>
+        <p class="output">60GB of 128GB</p>
+      </section>
+
+      <section class="container full">
+        <h1>IsDB-BISEW IT Scholarship Programme</h1>
+        <iframe
+          src="https://www.isdb-bisew.org/it-scholarship-programme"
+        ></iframe>
+      </section>
+
+      <section class="container">
+        <h1>C# Code Example</h1>
+        <code>Console.WriteLine("Motorcycle");</code>
+      </section>
+
+      <section class="container">
+        <h1>Preformatted Text Example</h1>
+        <pre>
+Any fool can write code that a computer can understand.
+Good programmers write code that humans can understand.
+Programming is logic-based creativity.
+</pre
+        >
+      </section>
+    </main>
+
+    <div class="bottom-action">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>
+      <p>© 2026 WebDev Mastery | HTML Elements Practice Page</p>
+    </footer>
+  </body>
+</html>

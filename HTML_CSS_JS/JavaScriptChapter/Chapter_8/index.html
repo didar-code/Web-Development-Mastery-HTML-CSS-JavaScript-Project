@@ -1,0 +1,444 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chapter 8 | JavaScript Classes</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Segoe UI", sans-serif;
+        background: linear-gradient(135deg, #1a1a2e, #16213e);
+        color: white;
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background:
+          radial-gradient(
+            circle at 20% 30%,
+            rgba(79, 195, 247, 0.12),
+            transparent 25%
+          ),
+          radial-gradient(
+            circle at 80% 20%,
+            rgba(129, 199, 132, 0.12),
+            transparent 25%
+          );
+        z-index: -1;
+      }
+
+      nav {
+        background: linear-gradient(
+          90deg,
+          rgba(41, 128, 185, 0.95),
+          rgba(39, 174, 96, 0.95)
+        );
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .logo {
+        font-weight: 800;
+        font-size: 1.2rem;
+        text-decoration: none;
+        color: white;
+      }
+
+      .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .nav-links a {
+        color: white;
+        text-decoration: none;
+        padding: 0.6rem 1rem;
+        border-radius: 8px;
+        font-weight: 600;
+        background: rgba(255, 255, 255, 0.1);
+        transition: 0.3s;
+      }
+
+      .nav-links a:hover,
+      .nav-links .active {
+        background: rgba(255, 255, 255, 0.25);
+        transform: translateY(-2px);
+      }
+
+      .hero {
+        text-align: center;
+        padding: 3rem 1rem 2rem;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 4rem);
+        background: linear-gradient(90deg, #81c784, #4fc3f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 1rem;
+      }
+
+      .hero p {
+        color: #d8e6f3;
+        max-width: 800px;
+        margin: auto;
+      }
+
+      .chapter-grid {
+        max-width: 1200px;
+        margin: auto;
+        padding: 1rem;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .box {
+        background: rgba(15, 30, 60, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 18px;
+        padding: 1.5rem;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+        transition: 0.3s;
+      }
+
+      .box:hover {
+        transform: translateY(-5px);
+        border-color: rgba(79, 195, 247, 0.4);
+      }
+
+      .box h2 {
+        color: #4fc3f7;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        border-bottom: 2px solid rgba(79, 195, 247, 0.2);
+        padding-bottom: 0.7rem;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 0.9rem;
+        margin-top: 0.7rem;
+        border-radius: 10px;
+        border: 2px solid rgba(79, 195, 247, 0.2);
+        background: rgba(255, 255, 255, 0.08);
+        color: white;
+        font-size: 1rem;
+      }
+
+      button {
+        padding: 13px 24px;
+        margin-top: 12px;
+        margin-right: 8px;
+        border: none;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #2563eb, #38bdf8);
+        color: white;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.35s;
+        box-shadow: 0 8px 18px rgba(37, 99, 235, 0.35);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      }
+
+      .output {
+        margin-top: 1rem;
+        padding: 0.9rem;
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.07);
+        border-left: 4px solid #81c784;
+        font-weight: 700;
+        min-height: 45px;
+        white-space: pre-wrap;
+      }
+
+      .log {
+        background: #020617;
+        color: #22c55e;
+        padding: 15px;
+        border-radius: 12px;
+        font-family: monospace;
+        height: 180px;
+        overflow-y: auto;
+      }
+
+      .home-wrap {
+        text-align: center;
+        margin: 2rem 0 3rem;
+      }
+
+      .home-btn {
+        display: inline-block;
+        padding: 13px 28px;
+        border-radius: 14px;
+        background: linear-gradient(135deg, #334155, #475569);
+        color: white;
+        text-decoration: none;
+        font-weight: 700;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem;
+        background: rgba(15, 30, 60, 0.92);
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        nav {
+          flex-direction: column;
+          gap: 1rem;
+        }
+        .nav-links {
+          justify-content: center;
+        }
+        button,
+        .home-btn {
+          width: 100%;
+          margin-right: 0;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <a href="../../project.html" class="logo">📚 WebDev Mastery</a>
+      <ul class="nav-links">
+        <li><a href="../../project.html">Home</a></li>
+        <li><a href="../Chapter_7/index.html">Previous Chapter</a></li>
+        <li><a href="#" class="active">Chapter 8</a></li>
+        <li><a href="../Chapter_9/index.html">Next Chapter</a></li>
+      </ul>
+    </nav>
+
+    <section class="hero">
+      <h1>🧑‍🎓 JavaScript Classes</h1>
+      <p>
+        Learn reusable classes, constructors, static methods, chaining and
+        real-world object-based JavaScript patterns.
+      </p>
+    </section>
+
+    <main class="chapter-grid">
+      <div class="box">
+        <h2>8.1 Creating a Reusable Class</h2>
+        <input id="p2First" value="Didar" />
+        <input id="p2Last" value="Chowdhury" />
+        <input id="p2Dob" type="date" />
+        <input id="p2Country" value="Bangladesh" />
+        <button onclick="createPerson2()">Create</button>
+        <button onclick="swapPerson2()">Swap Names</button>
+        <p id="p2Output" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>8.2 Adding Properties to a Class</h2>
+        <input id="firstName" value="Didarul" />
+        <input id="lastName" value="Alam" />
+        <input id="dob" type="date" value="1997-10-15" />
+        <button onclick="createPerson()">Create Person</button>
+        <button onclick="updateDOB()">Update DOB</button>
+        <p id="output" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>8.3 Better String Representation</h2>
+        <input id="firstName3" value="Wasif" />
+        <input id="lastName3" value="Adnan" />
+        <button onclick="createPerson3()">Create</button>
+        <button onclick="showString()">Show String</button>
+        <p id="output3" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>8.4 Constructor Pattern</h2>
+        <input id="firstName4" value="Tashrif" />
+        <input id="lastName4" value="Ahsan" />
+        <button onclick="createPerson4()">Create</button>
+        <button onclick="swapNames4()">Swap</button>
+        <p id="output4" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>8.5 Supporting Method Chaining</h2>
+        <input id="bookTitle" value="Economics Fundamental" />
+        <input id="bookAuthor" value="Adam Smith" />
+        <input id="bookPrice" value="500" />
+        <input id="bookPercent" value="0.1" />
+        <button onclick="createBook5()">Create Book</button>
+        <button onclick="raisePrice5()">Raise Price</button>
+        <button onclick="chainMethods5()">Chain</button>
+        <p id="output5" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>8.6 Static Methods</h2>
+        <input id="isbn" value="1650-08-4555-0214" />
+        <input id="title" value="Don't Let You Down" />
+        <input id="author" value="Didar" />
+        <button onclick="createBook6()">Create</button>
+        <button onclick="checkStaticMethod6()">Check ISBN</button>
+        <p id="output6" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>8.9 Length Converter</h2>
+        <input id="value" value="100" />
+        <select id="fromUnit">
+          <option value="100">Meters</option>
+          <option value="1">Centimeters</option>
+          <option value="100000">Kilometers</option>
+        </select>
+        <select id="toUnit">
+          <option value="100">Meters</option>
+          <option value="1">Centimeters</option>
+          <option value="100000">Kilometers</option>
+        </select>
+        <button onclick="convertLength()">Convert</button>
+        <p id="outputLength" class="output"></p>
+      </div>
+
+      <div class="box">
+        <h2>🧾 Event Log</h2>
+        <div id="log" class="log"></div>
+      </div>
+    </main>
+
+    <div class="home-wrap">
+      <a href="../../project.html" class="home-btn">🏠 Go Back Home</a>
+    </div>
+
+    <footer>© 2026 WebDev Mastery | JavaScript Learning Project</footer>
+
+    <script>
+      class InvisibleLogger {
+        static log(msg) {
+          const log = document.getElementById("log");
+          log.textContent += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+          log.scrollTop = log.scrollHeight;
+        }
+      }
+
+      class Person2 {
+        constructor(first, last, dob, country) {
+          this.firstname = first;
+          this.lastname = last;
+          this.dob = dob;
+          this.country = country;
+        }
+        swapNames() {
+          [this.firstname, this.lastname] = [this.lastname, this.firstname];
+        }
+      }
+
+      let person2;
+
+      function createPerson2() {
+        person2 = new Person2(
+          p2First.value,
+          p2Last.value,
+          p2Dob.value,
+          p2Country.value,
+        );
+        p2Output.textContent = `Name: ${person2.firstname} ${person2.lastname}\nDOB: ${person2.dob}\nCountry: ${person2.country}`;
+        InvisibleLogger.log("Created Person2");
+      }
+
+      function swapPerson2() {
+        person2.swapNames();
+        createPerson2();
+      }
+
+      class Person {
+        constructor(first, last, date) {
+          this.firstName = first;
+          this.lastName = last;
+          this._dateOfBirth = date;
+        }
+      }
+
+      let person;
+
+      function createPerson() {
+        person = new Person(
+          firstName.value,
+          lastName.value,
+          new Date(dob.value),
+        );
+        output.textContent = `${person.firstName} ${person.lastName}`;
+        InvisibleLogger.log("Created Person");
+      }
+
+      function updateDOB() {
+        output.textContent = `DOB Updated: ${dob.value}`;
+      }
+
+      function createPerson3() {
+        output3.textContent = `${firstName3.value} ${lastName3.value}`;
+      }
+
+      function showString() {
+        output3.textContent = `${lastName3.value}, ${firstName3.value}`;
+      }
+
+      function createPerson4() {
+        output4.textContent = `${firstName4.value} ${lastName4.value}`;
+      }
+
+      function swapNames4() {
+        output4.textContent = `${lastName4.value} ${firstName4.value}`;
+      }
+
+      function createBook5() {
+        output5.textContent = `${bookTitle.value} | ${bookAuthor.value}`;
+      }
+
+      function raisePrice5() {
+        output5.textContent = `New Price: ${Number(bookPrice.value) * 1.1}`;
+      }
+
+      function chainMethods5() {
+        output5.textContent = `Chain Applied`;
+      }
+
+      function createBook6() {
+        output6.textContent = `Book Created`;
+      }
+
+      function checkStaticMethod6() {
+        output6.textContent = `ISBN Checked`;
+      }
+
+      function convertLength() {
+        const result = (value.value * fromUnit.value) / toUnit.value;
+        outputLength.textContent = `Result: ${result.toFixed(2)}`;
+      }
+    </script>
+  </body>
+</html>
