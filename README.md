@@ -165,7 +165,7 @@ HTML_CSS_JS/
 
 1. Open the project folder in VS Code.
 2. Install the **Live Server** extension.
-3. Right-click on `project.html` or `index.html`.
+3. Right-click on `project.html`
 4. Click **Open with Live Server**.
 
 ---
@@ -180,87 +180,6 @@ For GitHub Pages, rename:
 project.html
 ```
 
-to:
-
-```text
-index.html
-```
-
-GitHub Pages automatically loads `index.html` as the homepage.
-
-### Step 2: Create a New Repository
-
-1. Go to GitHub.
-2. Click **New repository**.
-3. Add a repository name.
-4. Keep it public if you want to use free GitHub Pages.
-5. Click **Create repository**.
-
-Suggested repository names:
-
-```text
-webdev-mastery-html-css-js
-html-css-js-learning-platform
-frontend-learning-dashboard
-web-development-tutorial-project
-```
-
-### Step 3: Upload Files
-
-1. Open your new repository.
-2. Click **Add file**.
-3. Click **Upload files**.
-4. Drag and drop your project files.
-5. Add a commit message like:
-
-```text
-Initial commit - add responsive web development learning project
-```
-
-6. Click **Commit changes**.
-
-### Step 4: Enable GitHub Pages
-
-1. Go to repository **Settings**.
-2. Click **Pages** from the left sidebar.
-3. Under **Build and deployment**, choose:
-
-```text
-Source: Deploy from a branch
-Branch: main
-Folder: /root
-```
-
-4. Click **Save**.
-5. Wait a few minutes and GitHub will generate your live website link.
-
----
-
-## ⚙️ Important Setup Notes
-
-### Rename `project.html` to `index.html`
-
-This is very important for GitHub Pages. If the file stays as `project.html`, visitors may not see the homepage automatically.
-
-### Fix Missing Links
-
-The current HTML file contains links to pages and folders such as:
-
-```text
-about.html
-contact.html
-HTML_Chapter/Chapter_1/index.html
-CSS_Chapter/Chapter_11/index.html
-JavaScriptChapter/Chapter_1/index.html
-projects/
-```
-
-If these files or folders are not uploaded, the links will show a 404 error. Add the required files later or temporarily remove links that are not ready.
-
-### Replace Placeholder URLs
-Replace them with your real GitHub Pages URL after deployment.
-
----
 
 ## 🔮 Future Improvements
 
