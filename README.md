@@ -1,21 +1,13 @@
 # 📚 WebDev Mastery - HTML, CSS & JavaScript Learning Project
 
+<img width="1575" height="768" alt="M_Home" src="https://github.com/user-attachments/assets/f01696b5-5001-4346-b419-25195b2b811f" />
+
 A responsive and professional front-end learning platform built with **HTML5**, **CSS3**, and **JavaScript**. This project is designed as a complete web development tutorial dashboard where learners can explore HTML, CSS, and JavaScript chapters through a clean interface, animated technology cards, dropdown navigation, progress tracking, and a simple learning dashboard form.
 
 ---
 
-## 🌐 Live Preview
-
-After uploading this project to GitHub, you can publish it using **GitHub Pages**.
-
-Example live link format:
-
-```text
-(https://github.com/didar-code/Web-Development-Mastery-HTML-CSS-JavaScript-Project)
-```
----
-
 ## 📌 Project Overview
+<img width="1443" height="858" alt="MERN" src="https://github.com/user-attachments/assets/7354906e-de03-4850-93cd-845443067ab4" />
 
 This project presents a structured learning interface for web development students. It includes navigation for HTML5, CSS3, and JavaScript tutorials, a modern hero section, responsive cards, contact information, quick links, a login-style learning dashboard, and a recommended learning path.
 
@@ -40,6 +32,7 @@ The design focuses on:
 The layout adjusts smoothly across different screen sizes. On smaller screens, the navigation and content sections stack properly for better readability.
 
 ### ✅ Professional Navigation Menu
+<img width="589" height="599" alt="Chap" src="https://github.com/user-attachments/assets/50ee9a15-d978-4216-8b68-685277f36eef" />
 
 The project includes a sticky top navigation bar with dropdown menus for:
 
